@@ -1,0 +1,322 @@
+
+version: '3.8'
+services:
+#  push-redis:
+#    image: k8s1.pec.com.tw/push-redis:latest
+#    container_name: push-redis4000
+#    #hostname: pushredishost
+#    networks:
+#      pushmq:
+#        aliases:
+#          - pushredishost
+#    ports:
+#      - "6379:6379"
+#    #restart: always
+#    restart: on-failure
+#    environment:
+#      - TZ=Asia/Taipei
+#    extra_hosts:
+#      - "localhost:10.201.39.11"
+#      - "rediscachehost:10.201.39.11"
+#      - "redisbullqueuehost:10.201.39.11"
+#      - "redispushauthhost:10.201.39.11"
+#      - "redispushbackendhost:10.201.39.11"
+#      - "redispushhost:10.201.39.11"
+#  push-rabbitmq:
+#    image: k8s1.pec.com.tw/push-rabbitmq:latest
+#    container_name: push-rabbitmq4000
+#    #hostname: pushrabbitmqhost
+#    networks:
+#      pushmq:
+#        aliases:
+#          - pushrabbitmqhost
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    #restart: always
+#    restart: on-failure
+#    environment:
+#      - TZ=Asia/Taipei
+#    extra_hosts:
+#      - "localhost:10.201.39.11"
+#      - "rabbitmqpushauthhost:10.201.39.11"
+#      - "rabbitmqpushbackendhost:10.201.39.11"
+#      - "pushrabbitmqhost:10.201.39.11"
+#  push-jaeger-allinone:
+#    image: k8s1.pec.com.tw/push-jaeger-allinone:latest
+#    container_name: push-jaeger-allinone4000
+#    #hostname: pushjaegerallinonehost
+#    networks:
+#      pushmq:
+#        aliases:
+#          - pushjaegerallinonehost
+#    ports:
+#      - "5775:5775/udp"
+#      - "6831:6831/udp"
+#      - "6832:6832/udp"
+#      - "5778:5778"
+#      - "16686:16686"
+#      - "14268:14268"
+#      - "9411:9411"
+#    #restart: always
+#    restart: on-failure
+#    environment:
+#      - TZ=Asia/Taipei
+#    extra_hosts:
+#      - "localhost:10.201.39.11"
+#      - "jaegersamplerhost:10.201.39.11"
+#      - "jaegerreporterhost:10.201.39.11"
+  push-log-viewer:
+    image: k8s1.pec.com.tw/push-log-viewer:latest
+    container_name: push-log-viewer4000
+    #hostname: pushlogviewerhost
+    networks:
+      pushmq:
+        aliases:
+          - pushlogviewerhost
+    ports:
+      - "4010:8111"
+    volumes:
+      - logDirName:/home/pushdata/logs/
+    #restart: always
+    restart: on-failure
+    environment:
+      - TZ=Asia/Taipei
+  push-httpd:
+    image: k8s1.pec.com.tw/push-httpd:latest
+    container_name: push-httpd4000
+    #hostname: pushhttpdhost
+    networks:
+      pushmq:
+        aliases:
+          - pushhttpdhost
+    ports:
+      - "4000:80"
+    volumes:
+      - push_httpd-htdocs:/usr/local/apache2/htdocs/
+    #restart: always
+    restart: on-failure
+    environment:
+      - TZ=Asia/Taipei
+#  push-auth-microapiapp:
+#    image: k8s1.pec.com.tw/push-auth-microapiapp:latest
+#    container_name: push-auth-microapiapp4000
+#    #hostname: pushauthmicrompiapphost
+#    networks:
+#      pushmq:
+#        aliases:
+#          - pushauthmicrompiapphost
+#    #build: .
+#    ports:
+#      - "4100:3100"
+#      - "4110:3110"
+#      - "4120:3120"
+#    volumes:
+#      - logDirName:/usr/src/dockerapp/logs/
+#    #restart: always
+#    restart: on-failure
+#    environment:
+#      # 指定共用環境變數(active,cluster,log,opentracing)
+#      - ENV_ACTIVE=development
+#      - ENV_CLUSTER_CORES=2
+#      - ENV_CLUSTER_PORT=3120
+#      - ENV_LOG_DIRNAME=/usr/src/dockerapp/logs/pushauthmicroapi
+#      - DATABASE_DEFAULT_HOST=databasedefaulthost
+#      #- DATABASE_DEFAULT_PORT=11527
+#      #- DATABASE_DEFAULT_SID=lxtp22
+#      - DATABASE_DEFAULT_PORT=1527
+#      - DATABASE_DEFAULT_SID=tp22
+#      - DATABASE_UNI_HOST=databaseunihost
+#      #- DATABASE_UNI_PORT=11527
+#      #- DATABASE_UNI_SID=lxtp22
+#      - DATABASE_UNI_PORT=1527
+#      - DATABASE_UNI_SID=tp22
+#      - DATABASE_FDM_HOST=databasefdmhost
+#      #- DATABASE_FDM_PORT=11527
+#      #- DATABASE_FDM_SID=lxtp22
+#      - DATABASE_FDM_PORT=1527
+#      - DATABASE_FDM_SID=tp22
+#      - DATABASE_NRM_HOST=databasenrmhost
+#      #- DATABASE_NRM_PORT=11527
+#      #- DATABASE_NRM_SID=lxtp22
+#      - DATABASE_NRM_PORT=1527
+#      - DATABASE_NRM_SID=tp22
+#      #- JAEGER_SAMPLER_HOST=jaegersamplerhost
+#      - JAEGER_REPORTER_HOST=jaegerreporterhost
+#      # 指定共用環境變數(cache,queue)
+#      - REDIS_CACHE_HOST=rediscachehost
+#      - REDIS_BULLQUEUE_HOST=redisbullqueuehost
+#      #- REDIS_PUSH_HOST=redispushhost
+#      # 指定環境變數(自己的Microservices,定義在main.ts)
+#      - RABBITMQ_PUSH_AUTH_HOST=rabbitmqpushauthhost
+#      #- RABBITMQ_PUSH_HOST=pushrabbitmqhost
+#      - REDIS_PUSH_AUTH_HOST=redispushauthhost
+#      #- REDIS_PUSH_HOST=redispushhost
+#      - TCP_PUSH_AUTH_HOST=pushauthmicroapiapphost
+#      - TCP_PUSH_AUTH_PORT=4100
+#      - TCP_PUSH_AUTH_MSPORT=4110
+#      #- TCP_PUSH_HOST=pushauthmicroapiapphost
+#      # 指定環境變數(使用別人的Microservices,定義在各modulue/**.ts)
+#      - RABBITMQ_PUSH_BACKEND_HOST=rabbitmqpushbackendhost
+#      #- RABBITMQ_PUSH_HOST=pushrabbitmqhost
+#      - REDIS_PUSH_BACKEND_HOST=redispushbackendhost
+#      #- REDIS_PUSH_HOST=redispushhost
+#      - TCP_PUSH_BACKEND_HOST=pushbackendmicroapiapphost
+#      - TCP_PUSH_BACKEND_PORT=4200
+#      - TCP_PUSH_BACKEND_MSPORT=4210
+#      - TZ=Asia/Taipei
+#    extra_hosts:
+#      - "localhost:10.201.39.11"
+#      - "rediscachehost:10.201.39.11"
+#      - "redisbullqueuehost:10.201.39.11"
+#      - "redispushauthhost:10.201.39.11"
+#      - "redispushbackendhost:10.201.39.11"
+#      - "redispushhost:10.201.39.11"
+#      - "rabbitmqpushauthhost:10.201.39.11"
+#      - "rabbitmqpushbackendhost:10.201.39.11"
+#      - "pushrabbitmqhost:10.201.39.11"
+#      - "jaegersamplerhost:10.201.39.11"
+#      - "jaegerreporterhost:10.201.39.11"
+#      - "pushauthmicroapiapphost:10.201.39.11"
+#      - "pushbackendmicroapiapphost:10.201.39.11"
+#      #- "databasedefaulthost:10.161.12.14"
+#      #- "databaseunihost:10.161.12.14"
+#      #- "databasefdmhost:10.161.12.14"
+#      #- "databasenrmhost:10.161.12.14"
+#      - "databasedefaulthost:10.161.12.1"
+#      - "databaseunihost:10.161.12.1"
+#      - "databasefdmhost:10.161.12.1"
+#      - "databasenrmhost:10.161.12.1"
+#    #depends_on:
+#    #  - push-redis
+#    #  - push-rabbitmq
+#    #  - push-jaeger-allinone
+  push-backend-microapiapp:
+    #image: push-backend-microapiapp:latest
+    image: k8s1.pec.com.tw/push-backend-microapiapp:latest
+    container_name: push-backend-microapiapp4000
+    #hostname: pushbackendmicroapiapphost
+    networks:
+      pushmq:
+        aliases:
+          - pushbackendmicroapiapphost
+    #build: .
+    ports:
+      - "4100:3100"
+      - "4110:3110"
+      - "4120:3120"
+    #  - "4200:3200"
+    #  - "4210:3210"
+    #  - "4220:3220"
+    volumes:
+      - logDirName:/usr/src/dockerapp/logs/
+    #restart: always
+    restart: on-failure
+    environment:
+      # 指定共用環境變數(active,cluster,log,opentracing)
+      - GOOGLE_APPLICATION_CREDENTIALS=/usr/src/dockerapp/config/pec-unilife-service-account-file.json
+      - ANDROID_UNI_APPLICATION_CREDENTIALS=/usr/src/dockerapp/config/pec-unilife-service-account-file.json
+      - ANDROID_FDM_APPLICATION_CREDENTIALS=/usr/src/dockerapp/config/pec-foodomo-service-account-file.json
+      - ANDROID_NRM_APPLICATION_CREDENTIALS=/usr/src/dockerapp/config/pec-nrm-service-account-file.json
+      - IOS_UNI_APPLICATION_CREDENTIALS=/usr/src/dockerapp/config/pec-unilife.pem
+      - IOS_UNI_APPLICATION_CREDENTIALS_KEY=/usr/src/dockerapp/config/pec-unilife-key.pem
+      - IOS_FDM_APPLICATION_CREDENTIALS=/usr/src/dockerapp/config/pec-foodomo.pem
+      - IOS_FDM_APPLICATION_CREDENTIALS_KEY=/usr/src/dockerapp/config/pec-foodomo-key.pem
+      - IOS_NRM_APPLICATION_CREDENTIALS=/usr/src/dockerapp/config/pec-nrm.pem
+      - IOS_NRM_APPLICATION_CREDENTIALS_KEY=/usr/src/dockerapp/config/pec-nrm-key.pem
+      - ENV_ACTIVE=development
+      - ENV_CLUSTER_CORES=2
+      - ENV_CLUSTER_PORT=3120
+      #- ENV_CLUSTER_PORT=3220
+      - ENV_LOG_DIRNAME=/usr/src/dockerapp/logs/pushbackendmicroapi
+      - DATABASE_DEFAULT_HOST=databasedefaulthost
+      #- DATABASE_DEFAULT_PORT=11527
+      #- DATABASE_DEFAULT_SID=lxtp22
+      - DATABASE_DEFAULT_PORT=1527
+      - DATABASE_DEFAULT_SID=tp22
+      - DATABASE_UNI_HOST=databaseunihost
+      #- DATABASE_UNI_PORT=11527
+      #- DATABASE_UNI_SID=lxtp22
+      - DATABASE_UNI_PORT=1527
+      - DATABASE_UNI_SID=tp22
+      - DATABASE_FDM_HOST=databasefdmhost
+      #- DATABASE_FDM_PORT=11527
+      #- DATABASE_FDM_SID=lxtp22
+      - DATABASE_FDM_PORT=1527
+      - DATABASE_FDM_SID=tp22      
+      - DATABASE_NRM_HOST=databasenrmhost
+      #- DATABASE_NRM_PORT=11527
+      #- DATABASE_NRM_SID=lxtp22
+      - DATABASE_NRM_PORT=1527
+      - DATABASE_NRM_SID=tp22
+      #- JAEGER_SAMPLER_HOST=jaegersamplerhost
+      - JAEGER_REPORTER_HOST=jaegerreporterhost
+      # 指定共用環境變數(cache,queue)
+      - REDIS_CACHE_HOST=rediscachehost
+      - REDIS_BULLQUEUE_HOST=redisbullqueuehost
+      #- REDIS_PUSH_HOST=redispushhost
+      # 指定環境變數(自己的Microservices,定義在main.ts)
+      - RABBITMQ_PUSH_BACKEND_HOST=rabbitmqpushbackendhost
+      #- RABBITMQ_PUSH_HOST=pushrabbitmqhost
+      - REDIS_PUSH_BACKEND_HOST=redispushbackendhost
+      #- REDIS_PUSH_HOST=redispushhost
+      - TCP_PUSH_BACKEND_HOST=pushbackendmicroapiapphost
+      - TCP_PUSH_BACKEND_PORT=4100
+      - TCP_PUSH_BACKEND_MSPORT=4110
+      #- TCP_PUSH_BACKEND_PORT=4200
+      #- TCP_PUSH_BACKEND_MSPORT=4210
+      #- TCP_PUSH_HOST=pushbackendmicroapiapphost
+      # 指定環境變數(使用別人的Microservices,定義在各modulue/**.ts)
+      #- RABBITMQ_PUSH_AUTH_HOST=rabbitmqpushauthhost
+      ##- RABBITMQ_PUSH_HOST=pushrabbitmqhost
+      #- REDIS_PUSH_AUTH_HOST=redispushauthhost
+      ##- REDIS_PUSH_HOST=redispushhost
+      #- TCP_PUSH_AUTH_HOST=pushauthmicroapiapphost
+      #- TCP_PUSH_AUTH_PORT=4100
+      #- TCP_PUSH_AUTH_MSPORT=4110
+      - TZ=Asia/Taipei
+    extra_hosts:
+      - "localhost:10.201.39.11"
+      - "rediscachehost:10.201.39.11"
+      - "redisbullqueuehost:10.201.39.11"
+      - "redispushauthhost:10.201.39.11"
+      - "redispushbackendhost:10.201.39.11"
+      - "redispushhost:10.201.39.11"
+      - "rabbitmqpushauthhost:10.201.39.11"
+      - "rabbitmqpushbackendhost:10.201.39.11"
+      - "pushrabbitmqhost:10.201.39.11"
+      - "jaegersamplerhost:10.201.39.11"
+      - "jaegerreporterhost:10.201.39.11"
+      - "pushauthmicroapiapphost:10.201.39.11"
+      - "pushbackendmicroapiapphost:10.201.39.11"
+      #- "databasedefaulthost:10.161.12.14"
+      #- "databaseunihost:10.161.12.14"
+      #- "databasefdmhost:10.161.12.14"
+      #- "databasenrmhost:10.161.12.14"      
+      - "databasedefaulthost:10.161.12.1"
+      - "databaseunihost:10.161.12.1"
+      - "databasefdmhost:10.161.12.1"
+      - "databasenrmhost:10.161.12.1"
+    #depends_on:  
+    #  - push-redis
+    #  - push-rabbitmq
+    #  - push-jaeger-allinone
+    #  #- push-auth-microapiapp
+networks:
+  pushmq:
+    #aliases:
+    #  - pushrabbitmqhost
+volumes:
+  push_httpd-htdocs:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/pushdata/
+  logDirName:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/pushdata/logs
+  

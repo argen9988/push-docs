@@ -1,0 +1,647 @@
+		if (iRegistrationTokens.length > 0) {
+            // https://levelup.gitconnected.com/send-push-notification-through-apns-using-node-js-7427a01662a2
+            // https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification#2943363
+
+            const bundleid = 'com.pec.unilife';  // < - Your Bundle ID
+            const host = 'api.push.apple.com'; // api.sandbox.push.apple.com or api.push.apple.com
+            let url = `https://${host}`;
+            let pem_file = ""; //'/var/www/public/certificate/pec.unilife.pem'; //<= prod & dev 可以共用一個 pem
+            if ((process.env.IOS_UNI_APPLICATION_CREDENTIALS) && (process.env.IOS_UNI_APPLICATION_CREDENTIALS !== undefined)) {
+                pem_file = 'C:\\Temp\\NESTJS\\FCM\\fcm-backend-microapiapp\\config\\pec.unilife.pem';
+                //pem_file = process.env.IOS_UNI_APPLICATION_CREDENTIALS;
+            } else {
+                throw new HttpException(`${this.envLogEnableTag ? ('[' + this.tagName + ']') : ''} IOS_APPLICATION_CREDENTIALS未設定! 請確認!`, 404);
+            }
+            const pem_secret = 'ddd444kkk'; //'****_some_password_****'; // <= 輸入新的密碼 要填在 php 使用
+
+            ////////////////////////////////////////////////////////////////////////////////
+            const $deviceToken = iRegistrationTokens[0]; // $token; //<= 接收裝置的 devToken
+
+            //$body['aps'] = array('alert' => $content, 'url' => url);
+            // Encode the payload as JSON
+            //ipayload = json_encode($body);
+
+            /*
+            * @constructor
+            * @param {String} deviceToken
+            * @param {Object} [options]
+            * @param {Object|String} [options.alert]
+            * @param {String} [options.alert.title]
+            * @param {String} [options.alert.body]
+            * @param {Number} [options.badge]
+            * @param {String} [options.sound]
+            * @param {String} [options.category]
+            * @param {Object} [options.data]
+            * @param {Boolean} [options.contentAvailable]
+            * @param {Number} [options.priority]
+            * @param {String} [options.topic]
+            * @param {String} [options.collapseId]
+            * @param {String} [options.threadId]
+            * @param {Object} [options.aps] - override all setters
+            */            
+            const ipayload = {
+                aps: {
+                    alert: { // fcmNotification
+                        title: fcmMessage['FCM_TITLE'],
+                        body: fcmMessage['FCM_BODY'],
+                        subtitle: 'Five Card Draw'
+                    },
+                    badge: 9,
+                    sound: 'bingbong.aiff',
+                    category: 'GAME_INVITATION',
+                    //'content-available': 1,
+                    url: (((fcmMessage['FCM_REDIRECT']) && (fcmMessage['FCM_REDIRECT'] !== undefined)) ? fcmMessage['FCM_REDIRECT'] : '')
+                }
+            };
+
+            // way2 - Api
+            //const tokenObject = UtilityService.useRequestGenToken(req);
+            //const accessToken: string = tokenObject.accessToken;
+            //const refreshToken: string = tokenObject.refreshToken;
+            const accessToken: string = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY2hlbWEiOiJyZXRtIiwidXNlcklkIjoiMjU5MTU3IiwiaWF0IjoxNjE3MDkxNTU2LCJleHAiOjE2MTcwOTUxNTYsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzUwMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9.eydYMKzyG3_7XRxai8MwpXAx9imhfLQjZ0PQitWQpF4";
+
+            if ((!accessToken) || (accessToken === undefined)) {
+                throw new HttpException("No auth token", 418);
+                //return false;
+            } else {
+                const jwtToken = accessToken;
+                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendNotificationToiOSDevice jwtToken = ${jwtToken}`);
+
+                // https://github.com/JCMais/node-libcurl
+
+                let successCount: number = 0;
+                let failureCount: number = 0;
+
+                console.log(`111`);
+                var Curl = require('node-libcurl').Curl;
+                var curl = new Curl();
+
+                /*
+                $http2ch = curl_init();
+                curl_setopt_array($http2ch, array(
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_2_0,
+                    CURLOPT_URL => "url/3/device/$token",
+                    CURLOPT_PORT => 443,
+                    CURLOPT_HTTPHEADER => array(
+                        "apns-topic: {bundleid}"
+                    ),
+                    CURLOPT_POST => TRUE,
+                    CURLOPT_POSTFIELDS => ipayload,
+                    CURLOPT_RETURNTRANSFER => TRUE,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_HEADER => 1
+                ));
+                curl_setopt($http2ch, CURLOPT_URL, "url/3/device/$token");
+                curl_setopt($http2ch, CURLOPT_SSLCERT, pem_file);
+                curl_setopt($http2ch, CURLOPT_SSLCERTPASSWD, pem_secret);
+                curl_setopt($http2ch, CURLOPT_SSL_VERIFYPEER, false); // 相同於 --insecure
+                //curl_setopt($http2ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($http2ch, CURLOPT_VERBOSE, true);
+                $result = curl_exec($http2ch);
+                */
+                
+                await Promise.all(iRegistrationTokens.map(async (elem, index) => {
+                    console.log(`222`);
+                    curl.setOpt(Curl.option.HTTP_VERSION, "CURL_HTTP_VERSION_2_0"); // 'HTTP_VERSION'
+                    curl.setOpt(Curl.option.URL, `${url}/${elem}`);
+                    curl.setOpt(Curl.option.PORT, 443); // 'PORT
+                    curl.setOpt(Curl.option.HTTPHEADER, [`apns-topic: ${bundleid}`]); // 'HTTPHEADER'
+                    curl.setOpt(Curl.option.POST, true); // 'POST'
+                    curl.setOpt(Curl.option.POSTFIELDS, JSON.stringify(ipayload)); // 'POSTFIELDS'
+                    //curl.setOpt(Curl.option.RETURNTRANSFER, true); // 'RETURNTRANSFER'
+                    curl.setOpt(Curl.option.TIMEOUT, 30); // 'TIMEOUT'
+                    curl.setOpt(Curl.option.HEADER, 1); // 'HEADER'
+                    curl.setOpt(Curl.option.SSLCERT, pem_file); // 'SSLCERT'
+                    curl.setOpt(Curl.option.KEYPASSWD, pem_secret); // 'KEYPASSWD'
+                    curl.setOpt(Curl.option.SSL_VERIFYPEER, false); // 'SSL_VERIFYPEER' // 相同於 --insecure
+                    //curl.setOpt(Curl.option.SSL_VERIFYHOST, false); // 'SSL_VERIFYHOST'
+                    curl.setOpt(Curl.option.VERBOSE, true); // 'VERBOSE'
+
+                    console.log(`333`);
+                    curl.on('end', function (statusCode, body, headers) {
+                        console.info(statusCode);
+                        console.info('---');
+                        console.info(`body.length = ${body.length} / ${JSON.stringify(body)}`);
+                        console.info('---');
+                        console.info(`headers = ${headers} / ${JSON.stringify(headers)}`);
+                        console.info('---');
+                        console.info(`Total Time = ${this.getInfo(Curl.info.TOTAL_TIME)}`);
+
+                        if ((JSON.stringify(body).indexOf('HTTP/2 200')) >= 0) {
+                            successCount++;
+                        } else {
+                            failureCount++;
+                            /* 刪除失效Token
+                            if (iRegistrationUsers.size > 0) {
+                                this.fcmTokenRepository.createQueryBuilder()
+                                    .delete()
+                                    .from(FcmToken)
+                                    .where("ID = :id", { id: iRegistrationUsers[index]['ID'] })
+                                    .execute() // 必須execute才會產生SQL送到DB
+                                    .then(async (rest) => {
+                                        // {"affected":12032}
+                                        if ((rest) && (rest !== undefined)) {
+                                            if ((rest['affected']) && (rest['affected'] !== undefined)) {
+                                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`delete FcmToken success => ${rest['affected']}`); // 到console看回傳的格式
+                                                //if (!isNaN(rest['affected'])) { }
+                                            }
+                                        }
+                                    })
+                                    .catch(error => {
+                                        if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`delete FcmToken error => ${error}`); // 到console看回傳的格式
+                                        // nestjs對於http exception有API可以調用，建議使用。
+                                        //throw new HttpException(error, 404);
+                                        //return error;
+                                    });
+                            }
+                            */
+                        }
+
+                        this.close();
+                    });
+
+                    console.log(`444`);
+                    curl.on('error', function (err, curlErrorCode) {
+                        console.error(`err.message = ${err.message} / ${JSON.stringify(err)}`);
+                        console.error('---');
+                        console.error(`curlErrorCode = ${curlErrorCode}`);
+                        this.close();
+                    });
+
+                    console.log(`555`);
+                    curl.perform();
+
+                    console.log(`666`);
+                }));
+                finalReturnObject['IOS'] = {
+                    "successCount": successCount,
+                    "failureCount": failureCount
+                };
+
+
+                return;
+
+                
+
+                var options = {
+                    host: 'api.push.apple.com',
+                    port: 443,
+                    path: '/3/device/288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B',
+                    method: 'POST',
+                    cert: fs.readFileSync(pem_file),
+                    passphrase: pem_secret,
+                };
+
+                var req = https.request(options, function (res) {
+                    console.log('STATUS: ' + res.statusCode);
+                    console.log('HEADERS: ' + JSON.stringify(res.headers));
+                    res.setEncoding('utf8');
+                    res.on('data', function (chunk) {
+                        console.log('BODY: ' + chunk);
+                    });
+                });
+
+                req.on('error', function (e) {
+                    console.log('problem with request: ' + e.message);
+                });
+
+                // write data to request body
+                req.write('data\n');
+                req.write('data\n');
+                req.end();
+                return;
+
+
+                /*
+                const options = {
+                    hostname: host,
+                    port: 443,
+                    path: '/', // url,
+                    method: 'POST',
+                    cert: fs.readFileSync(pem_file),
+                    passphrase: pem_secret,
+                    agent: false
+                };
+                //options['agent'] = new https.Agent(options);
+
+                const req = https.request(options, (res) => {
+                    console.log('statusCode:', res.statusCode);
+                    console.log('headers:', res.headers);
+
+                    res.on('data', (d) => {
+                        process.stdout.write(d);
+                    });
+                });
+
+                req.on('error', (e) => {
+                    console.error(e);
+                });
+                req.end();
+
+                return;
+                */
+
+
+                // load certificates
+                //let fs = require('fs')
+                //let key = fs.readFileSync(__dirname + '/user.key')
+                //let cert = fs.readFileSync(__dirname + '/user.crt')=
+                //let cert_file = fs.readFileSync("./ssl/my_self_signed_certificate.crt")
+                let cert_file = fs.readFileSync(pem_file);
+                const agent = new https.Agent({ // new HttpProxyAgent({
+                    //keepAlive: true,
+                    requestCert: true,
+                    rejectUnauthorized: false,
+                    host: host,
+                    port: 443,
+                    path: url,
+                    //key: pem_secret,
+                    //key: fs.readFileSync("C:\\Temp\\NESTJS\\FCM\\fcm-backend-microapiapp\\config\\pec.unilife.key.pem"),
+                    cert: cert_file,
+                    //cert: "C:\\Temp\\NESTJS\\FCM\\fcm-backend-microapiapp\\config\\pec.unilife.pem",
+                    passphrase: pem_secret
+                });
+                /*
+                console.log(`aaa`);
+                const client = http2.connect(url, {
+                    key: pem_secret,
+                    //key: fs.readFileSync("C:\\Temp\\NESTJS\\FCM\\fcm-backend-microapiapp\\config\\pec.unilife.key.pem"),
+                    cert: cert_file
+                    //key: fs.readFileSync(__dirname + '/newfile.key.pem'),
+                    //cert: fs.readFileSync(__dirname + '/newfile.crt.pem')
+                });
+                console.log(`bbb`);
+                client.on('error', (err) => console.error(err));
+                console.log(`ccc`);
+                */
+
+                console.log(`000 cert_file = ${pem_secret} ---- ${cert_file}`); // lamign test
+
+                console.log(`111 ipayload = ${JSON.stringify(ipayload)}`); // lamign test               
+
+                url = `${url}/3/device`;
+                //const url = `http://${CustomConfigModule.tcpTaskHost}:${CustomConfigModule.tcpTaskPort}${CustomConfigModule.tcpTaskGlobalPrefix}/pec2/get_cust_trust`;
+                await Promise.all(iRegistrationTokens.map(async (elem, index) => {
+                    url = `${url}/${elem}`; // $token
+                    console.log(`222 url ${index} = ${url}`); // lamign test
+
+                    //axios.get(url, { agent: agent });
+
+                    // https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/sending_notification_requests_to_apns
+                    const headers = {
+                        //host: host,
+                        //method: 'POST',
+                        path: url,
+                        //scheme: 'https',
+                        //':method': 'POST',
+                        //':path': url,
+                        //':scheme': 'https',
+                        //'authorization': jwtToken,
+                        'apns-topic': `${bundleid}`, // your application bundle ID
+                        'apns-push-type': 'alert',
+                        'apns-expiration': 0,
+                        'apns-priority': 10,
+                    }
+                    console.log(`headers = ${JSON.stringify(headers)}`);
+                    console.log(`ipayload = ${JSON.stringify(ipayload)}`);
+                    axios.post(url, JSON.stringify(ipayload), { // ipayload, {
+                        httpsAgent: agent,
+                        headers: headers, // {
+                        //    //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+                        //    //'Content-Type': 'multipart/form-data'
+                        //    //'content-type': 'application/json',
+                        //    //'Accept': 'application/json',
+                        //    //'Content-Type': 'application/txt;charset=UTF-8',
+                        //    'apns-topic': `${bundleid}`,
+                        //    'apns-push-type': 'alert',
+                        //    'apns-expiration': 0,
+                        //    'apns-priority': 10,
+                        //    //'Authorization': jwtToken
+                        //}
+                    }).then((response) => {
+                        console.log('SUCCESS!!');
+                        if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`Api ${url} return => ${JSON.stringify(response['data'])}`);
+                        // HTTP/2 200 apns-id: BABD5514-93E8-CB80-2579-E417CFA8E8DA 200 
+                        // HTTP/2 400 apns-id: 6B6F61C6-0FDD-D7D7-73EF-0D0FE0813D1B {"reason":"BadDeviceToken"}400
+                        if ((response['data'].valueOf().indexOf('HTTP/2 200')) >= 0) {
+                            successCount++;
+                        } else {
+                            failureCount++;
+                            /* 刪除失效Token
+                            if (iRegistrationUsers.size > 0) {
+                                this.fcmTokenRepository.createQueryBuilder()
+                                    .delete()
+                                    .from(FcmToken)
+                                    .where("ID = :id", { id: iRegistrationUsers[index]['ID'] })
+                                    .execute() // 必須execute才會產生SQL送到DB
+                                    .then(async (rest) => {
+                                        // {"affected":12032}
+                                        if ((rest) && (rest !== undefined)) {
+                                            if ((rest['affected']) && (rest['affected'] !== undefined)) {
+                                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`delete FcmToken success => ${rest['affected']}`); // 到console看回傳的格式
+                                                //if (!isNaN(rest['affected'])) { }
+                                            }
+                                        }
+                                    })
+                                    .catch(error => {
+                                        if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`delete FcmToken error => ${error}`); // 到console看回傳的格式
+                                        // nestjs對於http exception有API可以調用，建議使用。
+                                        //throw new HttpException(error, 404);
+                                        //return error;
+                                    });
+                            }
+                            */
+                        }
+
+                        // 使用Promise，盡可能避免使用callback方式。
+                        //return Promise.resolve({
+                        //    "successCount": response['successCount'],
+                        //    "failureCount": response['failureCount']
+                        //});
+                        //return Promise.resolve(response['data']);
+                    }).catch((err) => {
+                        console.log('FAILURE!!');
+                        if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendNotificationToiOSDevice error 1 = ${err} / ${JSON.stringify(err)}`);
+                    });
+
+                    /*
+                    const headers = {
+                        ':method': 'POST',
+                        'apns-topic': `${bundleid}`, //you application bundle ID
+                        ':scheme': 'https',
+                        ':path': url
+                    }
+                    const request = client.request(headers);
+
+                    request.on('response', (headers, flags) => {
+                        for (const name in headers) {
+                            console.log(`${name}: ${headers[name]}`);
+                        }
+                    });
+
+                    request.setEncoding('utf8');
+
+                    let data = ''
+                    request.on('data', (chunk) => { data += chunk; });
+                    request.write(JSON.stringify(ipayload))
+                    request.on('end', () => {
+                        console.log(`\n${data}`);
+                        client.close();
+                    });
+                    request.end();
+                    */
+
+
+                    /*    
+                    let iOSSendReturn = await this.httpService
+                        //.post(url, {
+                        .post(url, JSON.stringify(ipayload), {
+                        //.get(url, {
+                            // https://github.com/axios/axios#request-config
+                            //baseURL: CustomConfigModule.fileTransferDownloadUrl,
+                            //withCredentials: false, // default
+                            //timeout: CustomConfigModule.envHttpTimeout, // default is `0` (no timeout)
+                            //maxRedirects: 5,
+                            // `maxContentLength` defines the max size of the http response content in bytes allowed in node.js
+                            //maxContentLength: 2000,
+                            // `maxBodyLength` (Node only option) defines the max size of the http request content in bytes allowed
+                            //maxBodyLength: 2000,
+                            //httpsAgent: new https.Agent({ keepAlive: true }),
+                            //httpsAgent: agent,
+                            headers: {
+                                //'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+                                //'content-type': 'application/json',
+                                //'Accept': 'application/json',
+                                //'Content-Type': 'application/txt;charset=UTF-8',
+                                'apns-topic': `${bundleid}`,
+                                'apns-push-type': 'alert',
+                                'apns-expiration': 0,
+                                'apns-priority': 10,
+                                //'Authorization': jwtToken
+                            },
+                            //params: {
+                            //    'BRAN_ID': elem.REAL_SALE_ID,
+                            //    'CUST_ID': elem.CUST_ID
+                            //},
+                            //data: ipayload,
+                            responseType: 'text', // 'arraybuffer', 'document', 'json', 'text', 'stream', browser only: 'blob'
+                            transformRequest: [(data, headers) => {
+                                // Do whatever you want to transform the data
+                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendNotificationToiOSDevice transformRequest data => ${typeof(data)} / ${data}`);
+                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendNotificationToiOSDevice transformRequest headers => ${typeof(headers)} / ${headers}`);
+                                return data;
+                            }],
+                            transformResponse: [data => {
+                                // Do whatever you want to transform the data
+                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendNotificationToiOSDevice transformResponse data => ${typeof (data)} / ${data}`);
+                                //return JSON.parse(data);
+                                return data;
+                            }],
+                            // `onUploadProgress` allows handling of progress events for uploads
+                            // browser only
+                            //onUploadProgress: function (progressEvent) {
+                            // Do whatever you want with the native progress event
+                            //},
+                            // `onDownloadProgress` allows handling of progress events for downloads
+                            // browser only
+                            //onDownloadProgress: progressEvent => {
+                            // Do whatever you want with the native progress event
+                            //},
+                            validateStatus: status => {
+                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendNotificationToiOSDevice validateStatus status => ${JSON.stringify(status)}`);
+                                //return true;
+                                return status >= 200 && status < 300; // default
+                            },
+                        })
+                        .pipe(
+                            //timeout(CustomConfigModule.envHttpTimeout),
+                            map((response) => {
+                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`Api ${url} return => ${JSON.stringify(response['data'])}`);
+                                // response data = string / {"success":true,"controller":"Pec2Controller","handler":"getiOSSendReturn","response":{"data":[{"CUST_ID":"259157","INVO_NAME":"品樂實業有限公司","TRUST_AMT":620000,"SCH_AMT":624196,"TEMP_AMT":524,"DELI_AMT":295394,"NOTE_AMT":0,"CUST_TRUST":-299066}]}}
+
+                                /*
+                                echo $result;
+                                if ($result == FALSE) {
+                                    echo("Curl failed: ".curl_error($http2ch));
+                                }
+
+                                $status = curl_getinfo($http2ch, CURLINFO_HTTP_CODE);
+                                echo $status;
+                                //////////////////////////
+                                
+                                //const retdata = (JSON.parse(response.data)).response['data'];
+                                //return Promise.resolve(retdata);
+                            }),
+                            catchError(err => { // Error
+                                if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendNotificationToiOSDevice error 1 = ${JSON.stringify(err)}`);
+                                //UtilityService.exceptionTransfer(err, true);                                       
+                                //reject(err);
+                                return throwError(err);
+                                //throw new HttpException(`${this.envLogEnableTag ? ('[' + this.tagName + ']') : ''} 下載檔案失敗!`, 404);
+                            }))
+                        .toPromise();
+                    console.log(`iOSSendReturn = ${JSON.stringify(iOSSendReturn)}`);
+                    //rest[index].CUST_TRUST = iOSSendReturn[0].CUST_TRUST;
+                    */
+
+                }));
+            }
+
+            /*
+            const request = require('request');
+            request({
+                url: 'https://a.bcsc.com/app/api/v2/',
+                headers: {
+                    Authentication: '<security token>'
+                }
+            }, (error, response, body) => {
+                console.log(response);
+            });
+            */
+        }
+		
+		
+		
+async sendMulticast(fcmMessage: FcmMessage): Promise<any> {
+        // [START fcm_send_multicast]
+        if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`sendMulticast`);        
+
+        // Create a list containing up to 500 registration tokens.
+        // These registration tokens come from the client FCM SDKs.
+        let finalReturnObject: object = {};
+        let aRegistrationUsers: object[] = [];
+        let iRegistrationUsers: object[] = [];
+        let aRegistrationTokens: string[] = [];
+        let iRegistrationTokens: string[] = [];
+        const fcmTokenObj = {
+            //"APP_KIND": fcmMessage['APP_KIND']
+        };
+        await this.getRegistrationTokens(fcmTokenObj).then((getData) => {
+            if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`getRegistrationTokens result => ${JSON.stringify(getData)}`);
+            if ((getData) && (getData !== undefined)) {
+                if ((getData['ANDROID']) && (getData['ANDROID'] !== undefined) && (getData['ANDROID'].length === 2)) {
+                    aRegistrationUsers = getData['ANDROID'][0];
+                    aRegistrationTokens = getData['ANDROID'][1];
+                }
+                if ((getData['IOS']) && (getData['IOS'] !== undefined) && (getData['IOS'].length === 2)) {
+                    iRegistrationUsers = getData['IOS'][0];
+                    iRegistrationTokens = getData['IOS'][1];
+                }
+            }
+        });
+        const fcmNotification = {
+            title: fcmMessage['FCM_TITLE'],
+            body: fcmMessage['FCM_BODY'],
+        };
+        let fcmData = { // 測試傳遞
+            //stock: 'GOOG',
+            //open: '829.62',
+            //close: '635.67',
+        };
+        if ((fcmMessage['FCM_REDIRECT']) && (fcmMessage['FCM_REDIRECT'] !== undefined)) {
+            fcmData['redirect'] = fcmMessage['FCM_REDIRECT'];
+        }
+
+        if (aRegistrationTokens.length > 0) {
+            // https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages
+            // See documentation on defining a message payload.
+            const payload = {
+                notification: fcmNotification,
+                //notification: {
+                //    title: '$FooCorp up 1.43% on the day',
+                //    body: '$FooCorp gained 11.80 points to close at 835.67, up 1.43% on the day.'
+                //},
+                data: fcmData,
+                android: {
+                    //ttl: "86400s",
+                    //priority: 'high',
+                    //notification: {
+                    //    clickAction: 'OpenClickActivity'
+                    //}
+                },
+                apns: { // ios
+                    //headers: {
+                    //    "apns-priority": "5",
+                    //    "apns-expiration": "1604750400"
+                    //},
+                    //payload: {
+                    //    aps: {
+                    //        category: 'INVITE_CATEGORY'
+                    //    }
+                    //}
+                },
+                webpush: {
+                    //headers: {
+                    //    TTL: '86400',
+                    //    Urgency: 'high'
+                    //},
+                    //fcmOptions: {
+                    //    link: 'breakingnews.html'
+                    //}
+                },
+                tokens: aRegistrationTokens
+            };
+
+            // Send a message to the device corresponding to the provided registration token.
+            await admin.messaging().sendMulticast(payload)
+                .then((response) => {
+                    if (response.failureCount > 0) {
+                        const failedTokens = [];
+                        response.responses.forEach((resp, idx) => {
+                            if (!resp.success) {
+                                failedTokens.push(aRegistrationTokens[idx]);
+                                /* 刪除失效Token
+                                if (aRegistrationUsers.size > 0) {
+                                    this.fcmTokenRepository.createQueryBuilder()
+                                        .delete()
+                                        .from(FcmToken)
+                                        .where("ID = :id", { id: aRegistrationUsers[idx]['ID'] })
+                                        .execute() // 必須execute才會產生SQL送到DB
+                                        .then(async (rest) => {
+                                            // {"affected":12032}
+                                            if ((rest) && (rest !== undefined)) {
+                                                if ((rest['affected']) && (rest['affected'] !== undefined)) {
+                                                    if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`delete FcmToken success => ${rest['affected']}`); // 到console看回傳的格式
+                                                    //if (!isNaN(rest['affected'])) { }
+                                                }
+                                            }
+                                        })
+                                        .catch(error => {
+                                            if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`delete FcmToken error => ${error}`); // 到console看回傳的格式
+                                            // nestjs對於http exception有API可以調用，建議使用。
+                                            //throw new HttpException(error, 404);
+                                            //return error;
+                                        });
+                                }
+                                */
+                            }
+                        });
+                        console.log('List of tokens that caused failures: ' + failedTokens);
+                    }
+
+                    finalReturnObject['ANDROID'] = {
+                        "successCount": response['successCount'],
+                        "failureCount": response['failureCount']
+                    };
+                    // 使用Promise，盡可能避免使用callback方式。
+                    //return Promise.resolve({
+                    //    "successCount": response['successCount'],
+                    //    "failureCount": response['failureCount']
+                    //});
+                    //return Promise.resolve(response);
+                })
+                .catch((error) => {
+                    if ((this.envLogEnable) && (this.envLogEnableDetail)) this.logger.log(`Error sending message: ${JSON.stringify(error)}`);
+                    throw new HttpException(`${this.envLogEnableTag ? ('[' + this.tagName + ']') : ''} 訊息推播失敗: ${JSON.stringify(error)}`, 404);
+                });
+        }
+        if (iRegistrationTokens.length > 0) {
+        }
+
+        // 使用Promise，盡可能避免使用callback方式。
+        return Promise.resolve(finalReturnObject);
+        // [END fcm_send_multicast]
+    }
+		
+		
+		

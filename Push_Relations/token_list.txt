@@ -1,0 +1,52 @@
+
+Android
+http://edgecase.info/pec/fcm.htm
+Samsung token
+cx5ni6KRSwi_ygR1fghY6n:APA91bF08knuodNHWIa0-EesgA_Hj8BK9kJTn3NRXBY1gWtRzeNI0itASg4JqnEt3gTJx1-Sj7SmSgRPdvvHmxDVUFWTcOFsFEeh-p1bwQzuJB6hno2q1DOU5SBR6kpDb4yV4Ygo6P8z
+
+
+ios
+https://developer.apple.com/documentation/usernotifications/sending_push_notifications_using_command-line_tools
+
+openssl s_client -connect "${APNS_HOST_NAME}":443 -cert "${CERTIFICATE_FILE_NAME}" -certform DER -key "${CERTIFICATE_KEY_FILE_NAME}" -keyformat PEM
+
+openssl s_client -connect "https://api.push.apple.com":443 -cert "C:\Temp\NESTJS\FCM\fcm-backend-microapiapp\config\pec.unilife.pem" -certform DER -key "ddd444kkk" -keyformat PEM
+
+
+curl -v --header "apns-topic: ${TOPIC}" --header "apns-push-type: alert" --cert "${CERTIFICATE_FILE_NAME}" --cert-type DER --key "${CERTIFICATE_KEY_FILE_NAME}" --key-type PEM --data '{"aps":{"alert":"test"}}' --http2  https://${APNS_HOST_NAME}/3/device/${DEVICE_TOKEN}
+
+local
+curl -v --header "apns-topic: com.pec.unilife" --header "apns-push-type: alert" --cert "C:\Temp\NESTJS\FCM\fcm-backend-microapiapp\config\pec.unilife.pem" --pass "ddd444kkk" --data '{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}' --http2  "https://api.push.apple.com/3/device/288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B"
+
+tp docker
+curl -v --header "apns-topic: com.pec.unilife" --header "apns-push-type: alert" --cert "/usr/src/dockerapp/config/pec.unilife.pem" --pass "ddd444kkk" --data '{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}' --http2  "https://api.push.apple.com/3/device/288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B"
+
+
+
+'{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}'
+
+
+
+https://levelup.gitconnected.com/send-push-notification-through-apns-using-node-js-7427a01662a2
+
+http://edgecase.info/pec/apns.php
+
+Bruce iPhone11 Pro token
+A91F15A1B949032F5B8085D1C745865CBA5CF1E8FF355B09A687231B281A0EFE 
+
+iPhone12 token
+288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B
+
+ipad mini4 token
+38C79FC1692CC4974CD7FE29242176EC8B1760056FF7C5F8279128BDF7EB730B
+
+HTTP/2 200 apns-id: BABD5514-93E8-CB80-2579-E417CFA8E8DA 200
+
+HTTP/2 400 apns-id: 6B6F61C6-0FDD-D7D7-73EF-0D0FE0813D1B {"reason":"BadDeviceToken"}400
+
+
+
+https://unilifetest.pec.com.tw/product/9955
+
+
+

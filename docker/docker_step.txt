@@ -1,0 +1,793 @@
+
+redis
+
+
+
+rabbitmq
+C:\Program Files\RabbitMQ Server\rabbitmq_server-3.8.4\sbin>rabbitmq-plugins.bat enable rabbitmq_management
+Enabling plugins on node rabbit@87094024n3:
+rabbitmq_management
+The following plugins have been configured:
+  rabbitmq_management
+  rabbitmq_management_agent
+  rabbitmq_web_dispatch
+Applying plugin configuration to rabbit@87094024n3...
+Plugin configuration unchanged.
+C:\Program Files\RabbitMQ Server\rabbitmq_server-3.8.4\sbin>rabbitmq-server.bat
+http://localhost:15672
+export definitions
+rabbitmqctl export_definitions c:\temp\definitions.file.json
+
+
+
+Export definitions using rabbitmqadmin export rabbit.definitions.json.
+Add them inside the image using your Dockerfile: ADD rabbit.definitions.json /tmp/rabbit.definitions.json
+Add an environment variable when starting the container, for example, using docker-compose.yml:
+ environment:
+   - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management load_definitions "/tmp/rabbit.definitions.json"
+
+
+
+
+
+docker
+用30天來介紹和使用 Docker
+https://ithelp.ithome.com.tw/users/20103456/ironman/1320
+Deploy Docker containers with Zero Downtime
+https://medium.com/@simonestaffa/deploy-docker-containers-with-zero-downtime-ed06b0a0966d
+
+
+How can I change the location of docker images when using Docker Desktop on WSL2 with Windows 10 Home?
+https://stackoverflow.com/questions/62441307/how-can-i-change-the-location-of-docker-images-when-using-docker-desktop-on-wsl2
+
+
+
+C:\Windows\System32\drivers\etc\hosts
+10.11.103.220 rediscachehost
+10.11.103.220 redisbullqueuehost
+10.11.103.220 redispushauthhost
+10.11.103.220 redispushbackendhost
+10.11.103.220 redispushhost
+10.11.103.220 rabbitmqpushauthhost
+10.11.103.220 rabbitmqpushbackendhost
+10.11.103.220 rabbitmqpushhost
+#10.11.103.220 jaegersamplerhost
+10.11.103.220 jaegerreporterhost
+10.11.103.220 pushauthmicroapiapphost
+10.11.103.220 pushbackendmicroapiapphost
+10.11.25.37 databasedefaulthost
+10.11.25.37 databaseunihost
+
+
+分別在各專案下安裝package：npm install
+
+1. 事先下載：docker pull oraclelinux:7-slim or 8.4 // 下載
+# oracle-nodejs-release-el7 & oracle-release-el7
+#http://yum.gunet.gr/repo/OracleLinux/OL7/latest/x86_64/
+
+# nodejs
+#http://47.91.244.155/repo/OracleLinux/OL7/developer/nodejs14/x86_64/
+
+# node-oracledb-node14
+#https://yum.oracle.com/repo/OracleLinux/OL7/developer/nodejs14/x86_64/
+#https://oracle.github.io/node-oracledb/INSTALL.html
+
+2. 
+a.產生image為push-runtime:latest(在專案目錄下執行)
+	docker build -f pushdocker -t push-runtime:latest .
+b.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-runtime:latest > d:\pushdata\push-runtime_latest_save.tar
+	#docker save -o d:\pushdata\push-runtime_latest_save.tar push-runtime:latest
+	docker load < push-runtime_latest_save.tar
+	// export+import
+	#docker export pushruntime > push-runtime_latest_export.tar
+	#cat push-runtime_latest_export.tar | docker import - push-runtime:latest
+c.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-runtime:latest k8s1.pec.com.tw/push-runtime:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-runtime:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-runtime:latest
+
+3.
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushruntimehost --name push-runtime push-runtime:latest
+
+
+
+redis
+[Docker] Build Redis Cluster with Sentinel via Docker
+https://dotblogs.com.tw/ricochen/2018/03/12/023050
+
+
+1. C:\Windows\System32\drivers\etc\hosts
+10.11.103.220 rediscachehost
+10.11.103.220 redisbullqueuehost
+10.11.103.220 redispushauthhost
+10.11.103.220 redispushbackendhost
+10.11.103.220 redispushhost
+
+2. docker pull redis // 下載redis:latest
+docker image tag redis:latest push-redis:latest
+a.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-redis:latest > d:\pushdata\push-redis_latest_save.tar
+	#docker save -o d:\pushdata\push-redis_latest_save.tar push-redis:latest
+	docker load < push-redis_latest_save.tar
+	// export+import
+	#docker export push-redis > push-redis_latest_export.tar
+	#cat push-redis_latest_export.tar | docker import - push-redis:latest
+b.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-redis:latest k8s1.pec.com.tw/push-redis:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-redis:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-redis:latest
+
+3. 
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushredishost --name push-redis -p 6379:6379 push-redis:latest
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushredishost --name push-redis -p 6379:6379 --add-host=localhost:10.11.25.135 --add-host=rediscachehost:10.11.25.135 --add-host=redisbullqueuehost:10.11.25.135 --add-host=redispushauthhost:10.11.25.135 --add-host=redispushbackendhost:10.11.25.135 --add-host=redispushhost:10.11.25.135 push-redis:latest
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushredishost --name push-redis -p 6379:6379 --add-host=localhost:10.201.39.11 --add-host=rediscachehost:10.201.39.11 --add-host=redisbullqueuehost:10.201.39.11 --add-host=redispushauthhost:10.201.39.11 --add-host=redispushbackendhost:10.201.39.11 --add-host=redispushhost:10.201.39.11 push-redis:latest
+
+
+rabbitmq
+1. C:\Windows\System32\drivers\etc\hosts
+10.11.103.220 rabbitmqpushauthhost
+10.11.103.220 rabbitmqpushbackendhost
+10.11.103.220 rabbitmqpushhost
+
+2. docker pull rabbitmq:management // 下載
+docker pull rabbitmq:3.8
+
+3. export definitions
+	a. rabbitmqctl export_definitions c:\temp\definitions.file.json
+	b. change cluster_name to rabbit@rabbitmqpushhost
+	ex:
+	 {   
+		"name":"cluster_name",
+		"value":"rabbit@rabbitmqpushhost"
+	 },
+
+4. 建立image file(rabbitmqdocker)
+
+5. 
+a.產生image為push-rabbitmq:latest(在專案目錄下執行)
+	docker build -f rabbitmqdocker -t push-rabbitmq:latest .
+b.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-rabbitmq:latest > d:\pushdata\push-rabbitmq_latest_save.tar
+	#docker save -o d:\pushdata\push-rabbitmq_latest_save.tar push-rabbitmq:latest
+	docker load < push-rabbitmq_latest_save.tar
+	// export+import
+	#docker export push-rabbitmq > push-rabbitmq_user_export.tar
+	#cat push-rabbitmq_latest_export.tar | docker import - push-rabbitmq:latest
+c.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-rabbitmq:latest k8s1.pec.com.tw/push-rabbitmq:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-rabbitmq:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-rabbitmq:latest	
+
+6. 
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushrabbitmqhost --name push-rabbitmq -p 15672:15672 -p 5672:5672 push-rabbitmq:latest
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushrabbitmqhost --name push-rabbitmq -p 15672:15672 -p 5672:5672 --add-host=localhost:10.11.25.135 --add-host=rabbitmqpushauthhost:10.11.25.135 --add-host=rabbitmqpushbackendhost:10.11.25.135 --add-host=rabbitmqpushhost:10.11.25.135 push-rabbitmq:latest
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushrabbitmqhost --name push-rabbitmq -p 15672:15672 -p 5672:5672 --add-host=localhost:10.201.39.11 --add-host=rabbitmqpushauthhost:10.201.39.11 --add-host=rabbitmqpushbackendhost:10.201.39.11 --add-host=rabbitmqpushhost:10.201.39.11 push-rabbitmq:latest
+
+
+
+OpenTrancing(jaeger)
+1. C:\Windows\System32\drivers\etc\hosts
+#10.11.103.220 jaegersamplerhost
+10.11.103.220 jaegerreporterhost
+
+2. 
+a.
+docker pull jaegertracing/all-in-one:latest
+docker image tag jaegertracing/all-in-one:latest push-jaeger-allinone:latest
+docker pull jaegertracing/jaeger-collector:latest
+docker image tag jaeger-collector:latest push-jaeger-collector:latest
+docker pull jaegertracing/jaeger-agent:latest
+docker image tag jaeger-agent:latest push-jaeger-agent:latest
+docker pull jaegertracing/jaeger-query:latest
+docker image tag jaeger-query:latest push-jaeger-query:latest
+b.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-jaeger-allinone:latest > d:\pushdata\push-jaeger-allinone_latest_save.tar
+	#docker save -o d:\pushdata\push-jaeger-allinone_latest_save.tar push-jaeger-allinone:latest
+	docker load < push-jaeger-allinone_latest_save.tar
+	// export+import
+	#docker export push-jaeger-allinone > push-jaeger-allinone_latest_export.tar
+	#cat push-jaeger-allinone_latest_export.tar | docker import - push-jaeger-allinone:latest
+
+	# save+load
+	docker save push-jaeger-collector:latest > d:\pushdata\push-jaeger-collector_latest_save.tar
+	#docker save -o d:\pushdata\push-jaeger-collector_latest_save.tar push-jaeger-collector:latest
+	docker load < push-jaeger-collector_latest_save.tar
+	// export+import
+	#docker export push-jaeger-collector > push-jaeger-collector_latest_export.tar
+	#cat push-jaeger-collector_latest_export.tar | docker import - push-jaeger-collector:latest
+
+	# save+load
+	docker save push-jaeger-agent:latest > d:\pushdata\push-jaeger-agent_latest_save.tar
+	#docker save -o d:\pushdata\push-jaeger-agent_latest_save.tar push-jaeger-agent:latest
+	docker load < push-jaeger-agent_latest_save.tar
+	// export+import
+	#docker export push-jaeger-agent > push-jaeger-agent_latest_export.tar
+	#cat push-jaeger-agent_latest_export.tar | docker import - push-jaeger-agent:latest
+
+	# save+load
+	docker save push-jaeger-query:latest > d:\pushdata\push-jaeger-query_latest_save.tar
+	#docker save -o d:\pushdata\push-jaeger-query_latest_save.tar push-jaeger-query:latest
+	docker load < push-jaeger-query_latest_save.tar
+	// export+import
+	#docker export push-jaeger-query > push-jaeger-query_latest_export.tar
+	#cat push-jaeger-query_latest_export.tar | docker import - push-jaeger-query:latest
+c.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-jaeger-allinone:latest k8s1.pec.com.tw/push-jaeger-allinone:latest
+	docker tag push-jaeger-collector:latest k8s1.pec.com.tw/push-jaeger-collector:latest
+	docker tag push-jaeger-agent:latest k8s1.pec.com.tw/push-jaeger-agent:latest
+	docker tag push-jaeger-query:latest k8s1.pec.com.tw/push-jaeger-query:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-jaeger-allinone:latest
+	docker push k8s1.pec.com.tw/push-jaeger-collector:latest
+	docker push k8s1.pec.com.tw/push-jaeger-agent:latest
+	docker push k8s1.pec.com.tw/push-jaeger-query:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-jaeger-allinone:latest
+	docker pull k8s1.pec.com.tw/push-jaeger-collector:latest
+	docker pull k8s1.pec.com.tw/push-jaeger-agent:latest
+	docker pull k8s1.pec.com.tw/push-jaeger-query:latest	
+3. // https://www.jaegertracing.io/docs/1.22/getting-started/#all-in-one
+https://xenojoshua.com/2019/04/jaeger-note/
+
+Port	Protocol	Component	Function
+5775	UDP	agent	accept zipkin.thrift over compact thrift protocol (deprecated, used by legacy clients only)
+6831	UDP	agent	accept jaeger.thrift over compact thrift protocol
+6832	UDP	agent	accept jaeger.thrift over binary thrift protocol
+5778	HTTP	agent	serve configs
+16686	HTTP	query	serve frontend
+16687	HTTP	query	The http port for the health check service
+14267	TChannel	collector	The TChannel port for the collector service
+14268	HTTP	collector	accept jaeger.thrift directly from clients
+14269	HTTP	collector	The http port for the health check service
+14250	gRPC	collector	accept model.proto
+9411	HTTP	collector	Zipkin compatible endpoint (optional)
+
+a. all-in-one
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-allinone \
+  -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+  -p 5775:5775/udp \
+  -p 6831:6831/udp \
+  -p 6832:6832/udp \
+  -p 5778:5778 \
+  -p 16686:16686 \
+  -p 14267:14267 \
+  -p 14268:14268 \
+  -p 14250:14250 \
+  -p 9411:9411 \
+  push-jaeger-allinone:latest
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-allinone -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 -p 16686:16686 -p 14267:14267 -p 14268:14268 -p 14250:14250 -p 9411:9411 push-jaeger-allinone:latest
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-allinone -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 -p 16686:16686 -p 14267:14267 -p 14268:14268 -p 14250:14250 -p 9411:9411 --add-host=localhost:10.11.25.135 --add-host=jaegersamplerhost:10.11.25.135 --add-host=jaegerreporterhost:10.11.25.135 push-jaeger-allinone:latest
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-allinone -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 -p 16686:16686 -p 14267:14267 -p 14268:14268 -p 14250:14250 -p 9411:9411 --add-host=localhost:10.201.39.11 --add-host=jaegersamplerhost:10.201.39.11 --add-host=jaegerreporterhost:10.201.39.11 push-jaeger-allinone:latest
+  
+
+b. Jaeger Collector单独启动
+$ docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-collector \
+  -e SPAN_STORAGE_TYPE=memory \
+  -p 14267:14267 \
+  -p 14268:14268 \
+  -p 14250:14250 \
+  push-jaeger-collector:latest
+   
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-collector -e SPAN_STORAGE_TYPE=memory -p 14267:14267 -p 14268:14268 -p 14250:14250 push-jaeger-collector:latest
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-collector -e SPAN_STORAGE_TYPE=memory -p 14267:14267 -p 14268:14268 -p 14250:14250 --add-host=localhost:10.11.25.135 --add-host=jaegersamplerhost:10.11.25.135 --add-host=jaegerreporterhost:10.11.25.135 push-jaeger-collector:latest
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-collector -e SPAN_STORAGE_TYPE=memory -p 14267:14267 -p 14268:14268 -p 14250:14250 --add-host=localhost:10.201.39.11 --add-host=jaegersamplerhost:10.201.39.11 --add-host=jaegerreporterhost:10.201.39.11 push-jaeger-collector:latest
+
+
+c. Jaeger Agent单独启动
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-agent \
+  --link jaeger-collector \
+  -p 5775:5775/udp \
+  -p 6831:6831/udp \
+  -p 6832:6832/udp \
+  -p 5778:5778 \
+  push-jaeger-agent:latest \
+  --reporter.type=grpc \
+  --reporter.grpc.host-port=jaeger-collector:14250
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-agent --link jaeger-collector -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 push-jaeger-agent:latest --reporter.type=grpc --reporter.grpc.host-port=10.11.103.220:14250
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-agent --link jaeger-collector -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 --add-host=localhost:10.11.25.135 --add-host=jaegersamplerhost:10.11.25.135 --add-host=jaegerreporterhost:10.11.25.135 push-jaeger-agent:latest --reporter.type=grpc --reporter.grpc.host-port=jaeger-collector:14250
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-agent --link jaeger-collector -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 --add-host=localhost:10.201.39.11 --add-host=jaegersamplerhost:10.201.39.11 --add-host=jaegerreporterhost:10.201.39.11 push-jaeger-agent:latest --reporter.type=grpc --reporter.grpc.host-port=jaeger-collector:14250
+
+
+d. Jaeger Query单独启动
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-query \
+  --link jaeger-collector \
+  -e SPAN_STORAGE_TYPE=memory \
+  -p 16686:16686 \
+  push-jaeger-query:latest
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-query --link jaeger-collector -e SPAN_STORAGE_TYPE=memory -p 16686:16686 push-jaeger-query:latest
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-query --link jaeger-collector -e SPAN_STORAGE_TYPE=memory -p 16686:16686 --add-host=localhost:10.11.25.135 --add-host=jaegersamplerhost:10.11.25.135 --add-host=jaegerreporterhost:10.11.25.135 push-jaeger-query:latest
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --name push-jaeger-query --link jaeger-collector -e SPAN_STORAGE_TYPE=memory -p 16686:16686 --add-host=localhost:10.201.39.11 --add-host=jaegersamplerhost:10.201.39.11 --add-host=jaegerreporterhost:10.201.39.11 push-jaeger-query:latest
+
+
+
+install apache server
+Docker - 第十三章 | 安裝Apache Server
+https://morosedog.gitlab.io/docker-20190601-docker13/
+
+1. Searh指令進化搜尋10顆星以上的
+docker search -f=stars=10 apache
+
+2. docker pull httpd // 下載httpd:latest
+docker image tag httpd:latest push-httpd:latest
+a.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-httpd:latest > d:\pushdata\push-httpd_latest_save.tar
+	#docker save -o d:\pushdata\push-httpd_latest_save.tar push-httpd:latest
+	docker load < push-httpd_latest_save.tar
+	// export+import
+	#docker export push-httpd > push-httpd_latest_export.tar
+	#cat push-httpd_latest_export.tar | docker import - push-httpd:latest
+b.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-httpd:latest k8s1.pec.com.tw/push-httpd:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-httpd:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-httpd:latest
+
+3. 
+#docker volume create push_httpd-htdocs
+docker volume create --driver local --opt o=bind --opt type=none --opt device=d:/pushdata/ push_httpd-htdocs
+remote 
+docker volume create --driver local --opt o=bind --opt type=none --opt device=/home/pushdata/ push_httpd-htdocs
+
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname httpdhost \
+	--name push-httpd -p 4000:80 \
+	--mount source=push_httpd-htdocs,target=/usr/local/apache2/htdocs/ \
+	httpd:latest
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname httpdhost --name push-httpd -p 4000:80 --mount source=push_httpd-htdocs,target=/usr/local/apache2/htdocs/ httpd:latest
+
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname httpdhost \
+	--name push-httpd -p 4000:80 \
+	-it -v push_httpd-htdocs:/usr/local/apache2/htdocs/ \
+	httpd:latest	
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname httpdhost --name push-httpd -p 4000:80 -it -v push_httpd-htdocs:/usr/local/apache2/htdocs/ httpd:latest
+
+
+
+
+push-log-viewer
+
+a.產生image為push-runtime:latest(在專案目錄下執行)
+1. 事先下載：docker pull azul/zulu-openjdk:8 & docker pull azul/zulu-openjdk:11 // 下載
+
+2. 建立image file(push-log-viewer/Dockerfile)
+
+3. 
+a.產生image(在專案目錄下執行)
+	docker build -t push-log-viewer:latest .
+b.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-log-viewer:latest > d:\pushdata\push-log-viewer_latest_save.tar
+	#docker save -o d:\pushdata\push-log-viewer_latest_save.tar push-log-viewer:latest
+	docker load < push-log-viewer_latest_save.tar
+	// export+import
+	#docker export push-log-viewer > push-log-viewer_latest_export.tar
+	#cat push-log-viewer_latest_export.tar | docker import - push-log-viewer:latest
+c.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-log-viewer:latest k8s1.pec.com.tw/push-log-viewer:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-log-viewer:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-log-viewer:latest
+
+4. 
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushlogviewerhost \
+	--name push-log-viewer -p 5010:8111 \
+	--mount source=push_logDirName,target=/home/pushdata/logs/ \
+	push-log-viewer
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushlogviewerhost --name push-log-viewer -p 5010:8111 --mount source=push_logDirName,target=/home/pushdata/logs/ push-log-viewer
+
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushlogviewerhost \
+	--name push-log-viewer -p 5010:8111 \
+	-it -v push_logDirName:/home/pushdata/logs/ \
+	push-log-viewer	
+	
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushlogviewerhost --name push-log-viewer -p 5010:8111 -it -v push_logDirName:/home/pushdata/logs/ push-log-viewer
+
+
+
+remote --add-host
+cat /etc/hosts | sed 's/^#.//g' | grep '[0-9][0-9]' | tr "\t" " " | awk '{print "--add-host="$2":"$1 }' | tr '\n' ' '
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushlogviewerhost --name push-log-viewer -p 5010:8111 --mount source=push_logDirName,target=/home/pushdata/logs/ k8s1.pec.com.tw/push-log-viewer
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushlogviewerhost --name push-log-viewer -p 5010:8111 -it -v push_logDirName:/home/pushdata/logs/ k8s1.pec.com.tw/push-log-viewer
+
+
+
+
+
+
+
+docker container cmd
+docker exec -it [container_id] sh
+
+
+
+
+docker-volume
+1. create
+local
+#docker volume create push_logDirName
+docker volume create --driver local --opt o=bind --opt type=none --opt device=d:/pushdata/logs push_logDirName
+remote 
+docker volume create --driver local --opt o=bind --opt type=none --opt device=/home/pushdata/logs push_logDirName
+
+
+2. find
+docker volume ls 
+docker volume inspect push_logDirName
+
+3. remove
+docker volume rm push_logDirName
+
+
+產生image(使用Github source)須知:
+# 有設定下面兩行, https://可以,(Dockerfile要改成 npm install & npm run build要做), ssh還試不出來
+set DOCKER_BUILDKIT=0
+set COMPOSE_DOCKER_CLI_BUILD=0
+docker build -f Dockerfile.build -t push-backend-microapiapp:github https://github.com/argen9988/push-backend.git#master
+
+
+#docker build -f Dockerfile.build -t push-backend-microapiapp:github git@github.com:argen9988/push-backend.git#master
+docker build -f Dockerfile.build -t push-backend-microapiapp:github --build-arg ssh_prv_key="$(type C:\Users\87094024\.ssh\id_rsa)" --build-arg ssh_pub_key="$(type C:\Users\87094024\.ssh\id_rsa.pub)" git@github.com:argen9988/push-backend.git#master
+#docker build -t push-backend-microapiapp:github --build-arg ssh_prv_key="$(cat ~/.ssh/id_rsa)" --build-arg ssh_pub_key="$(cat ~/.ssh/id_rsa.pub)" git@github.com:argen9988/push-backend.git#master
+
+
+永康的 docker registry :
+	k8s1.pec.com.tw
+	IP= 10.11.25.131  port 80 & 443 
+
+
+
+push-auth-microapi
+1. 建立image file(push-auth-microapiapp/Dockerfile)
+
+2. 
+a.產生image(在專案目錄下執行)
+	docker build -t push-auth-microapiapp:latest .
+b.產生image(使用Github source)
+	docker build -t push-auth-microapiapp:latest https://github.com/argen9988/push-auth.git#master
+	#docker build -t push-auth-microapiapp:latest git@github.com:argen9988/push-auth.git#master
+c.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-auth-microapiapp:latest > d:\pushdata\push-auth-microapiapp_latest_save.tar
+	#docker save -o d:\pushdata\push-auth-microapiapp_latest_save.tar push-auth-microapiapp:latest
+	docker load < push-auth-microapiapp_latest_save.tar
+	// export+import
+	#docker export push-auth-microapiapp > push-auth-microapiapp_latest_export.tar
+	#cat push-auth-microapiapp_latest_export.tar | docker import - push-auth-microapiapp:latest
+d.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-auth-microapiapp:latest k8s1.pec.com.tw/push-auth-microapiapp:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-auth-microapiapp:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-auth-microapiapp:latest
+
+3. 
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushauthmicroapiapphost \
+	--name push-auth-microapiapp -p 4100:3100 \
+	--mount source=push_logDirName,target=/usr/src/dockerapp/logs/ \
+	push-auth-microapiapp
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushauthmicroapiapphost --name push-auth-microapiapp -p 4100:3100 --mount source=push_logDirName,target=/usr/src/dockerapp/logs/ push-auth-microapiapp
+
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushauthmicroapiapphost \
+	--name push-auth-microapiapp -p 4100:3100 \
+	-it -v push_logDirName:/usr/src/dockerapp/logs/ \
+	push-auth-microapiapp	
+	
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushauthmicroapiapphost --name push-auth-microapiapp -p 4100:3100 -it -v push_logDirName:/usr/src/dockerapp/logs/ push-auth-microapiapp
+
+remote --add-host
+cat /etc/hosts | sed 's/^#.//g' | grep '[0-9][0-9]' | tr "\t" " " | awk '{print "--add-host="$2":"$1 }' | tr '\n' ' '
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushauthmicroapiapphost --name push-auth-microapiapp -p 4100:3100 --mount source=push_logDirName,target=/usr/src/dockerapp/logs/ --add-host=localhost:10.11.25.135 --add-host=rediscachehost:10.11.25.135 --add-host=redisbullqueuehost:10.11.25.135 --add-host=redispushauthhost:10.11.25.135 --add-host=redispushbackendhost:10.11.25.135 --add-host=redispushhost:10.11.25.135 --add-host=rabbitmqpushauthhost:10.11.25.135 --add-host=rabbitmqpushbackendhost:10.11.25.135 --add-host=rabbitmqfrontendhost:10.11.25.135 --add-host=rabbitmqpushhost:10.11.25.135 --add-host=jaegersamplerhost:10.11.25.135 --add-host=jaegerreporterhost:10.11.25.135 --add-host=pushauthmicroapiapphost:10.11.25.135 --add-host=pushbackendmicroapiapphost:10.11.25.135 --add-host=databasedefaulthost:10.161.12.14 --add-host=databaseunihost:10.161.12.14 push-auth-microapiapp
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushauthmicroapiapphost --name push-auth-microapiapp -p 4100:3100 -it -v push_logDirName:/usr/src/dockerapp/logs/ --add-host=localhost:10.201.39.11 --add-host=rediscachehost:10.201.39.11 --add-host=redisbullqueuehost:10.201.39.11 --add-host=redispushauthhost:10.201.39.11 --add-host=redispushbackendhost:10.201.39.11 --add-host=redispushhost:10.201.39.11 --add-host=rabbitmqpushauthhost:10.201.39.11 --add-host=rabbitmqpushbackendhost:10.201.39.11 --add-host=rabbitmqfrontendhost:10.201.39.11 --add-host=rabbitmqpushhost:10.201.39.11 --add-host=jaegersamplerhost:10.201.39.11 --add-host=jaegerreporterhost:10.201.39.11 --add-host=pushauthmicroapiapphost:10.201.39.11 --add-host=pushbackendmicroapiapphost:10.201.39.11 --add-host=databasedefaulthost:10.161.12.14 --add-host=databaseunihost:10.161.12.14 push-auth-microapiapp
+
+
+
+
+
+push-backend-microapi
+1. 建立image file(push-backend-microapiapp/Dockerfile)
+
+2. 
+a.產生image(在專案目錄下執行)
+	docker build -t push-backend-microapiapp:latest .
+b.產生image(使用Github source)
+	docker build -t push-backend-microapiapp:latest https://github.com/argen9988/push-backend.git#master
+	#docker build -t push-backend-microapiapp:latest git@github.com:argen9988/push-backend.git#master
+c.備份成tar.gz可以遠端重建
+	// https://blog.hinablue.me/docker-bi-jiao-save-export-dui-yu-ying-xiang-dang-cao-zuo-chai-yi/
+	# save+load
+	docker save push-backend-microapiapp:latest > d:\pushdata\push-backend-microapiapp_latest_save.tar
+	#docker save -o d:\pushdata\push-backend-microapiapp_latest_save.tar push-backend-microapiapp:latest
+	docker load < push-backend-microapiapp_latest_save.tar
+	// export+import
+	#docker export push-backend-microapiapp > push-backend-microapiapp_latest_export.tar
+	#cat push-backend-microapiapp_latest_export.tar | docker import - push-backend-microapiapp:latest
+d.push/pull local registry
+	i.登入 docker repository
+	docker login k8s1.pec.com.tw (argen/p12131111 ? p12131111!)
+	ii.替本機 image file 加上標籤
+	docker tag push-backend-microapiapp:latest k8s1.pec.com.tw/push-backend-microapiapp:latest
+	iii.
+	docker push k8s1.pec.com.tw/push-backend-microapiapp:latest
+	iv. 用 Docker Registry 提供的 Restful API 來查詢 Docker Registry 資訊
+	#Day8：查詢 Docker Registry 的資訊
+	#https://ithelp.ithome.com.tw/articles/10191285
+	http://k8s1.pec.com.tw:5000/v2/_catalog
+	iv.
+	docker pull k8s1.pec.com.tw/push-backend-microapiapp:latest
+
+3. 
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushbackendmicroapiapphost \
+	--name push-backend-microapiapp -p 4200:3200 \
+	--mount source=push_logDirName,target=/usr/src/dockerapp/logs/ \
+	push-backend-microapiapp
+
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushbackendmicroapiapphost --name push-backend-microapiapp -p 4100:3100 --mount source=push_logDirName,target=/usr/src/dockerapp/logs/ push-backend-microapiapp
+
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushbackendmicroapiapphost \
+	--name push-backend-microapiapp -p 4200:3200 \
+	-it -v push_logDirName:/usr/src/dockerapp/logs/ \
+	push-backend-microapiapp	
+	
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushbackendmicroapiapphost --name push-backend-microapiapp -p 4200:3200 -it -v push_logDirName:/usr/src/dockerapp/logs/ push-backend-microapiapp
+
+remote --add-host
+cat /etc/hosts | sed 's/^#.//g' | grep '[0-9][0-9]' | tr "\t" " " | awk '{print "--add-host="$2":"$1 }' | tr '\n' ' '
+
+10.11.25.135(yk docker)
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushbackendmicroapiapphost --name push-backend-microapiapp -p 4200:3200 --mount source=push_logDirName,target=/usr/src/dockerapp/logs/ --add-host=localhost:10.11.25.135 --add-host=rediscachehost:10.11.25.135 --add-host=redisbullqueuehost:10.11.25.135 --add-host=redispushauthhost:10.11.25.135 --add-host=redispushbackendhost:10.11.25.135 --add-host=redispushhost:10.11.25.135 --add-host=rabbitmqpushauthhost:10.11.25.135 --add-host=rabbitmqpushbackendhost:10.11.25.135 --add-host=rabbitmqpushhost:10.11.25.135 --add-host=jaegersamplerhost:10.11.25.135 --add-host=jaegerreporterhost:10.11.25.135 --add-host=pushauthmicroapiapphost:10.11.25.135 --add-host=pushbackendmicroapiapphost:10.11.25.135 --add-host=databasedefaulthost:10.161.12.14 --add-host=databaseunihost:10.161.12.14 push-backend-microapiapp
+
+10.201.39.11:11122(tp docker)
+舊版
+docker run -e TZ="Asia/Taipei" --restart=on-failure -d --hostname pushbackendmicroapiapphost --name push-backend-microapiapp -p 4200:3200 -it -v push_logDirName:/usr/src/dockerapp/logs/ --add-host=localhost:10.201.39.11 --add-host=rediscachehost:10.201.39.11 --add-host=redisbullqueuehost:10.201.39.11 --add-host=redispushauthhost:10.201.39.11 --add-host=redispushbackendhost:10.201.39.11 --add-host=redispushhost:10.201.39.11 --add-host=rabbitmqpushauthhost:10.201.39.11 --add-host=rabbitmqpushbackendhost:10.201.39.11 --add-host=rabbitmqpushhost:10.201.39.11 --add-host=jaegersamplerhost:10.201.39.11 --add-host=jaegerreporterhost:10.201.39.11 --add-host=pushauthmicroapiapphost:10.201.39.11 --add-host=pushbackendmicroapiapphost:10.201.39.11 --add-host=databasedefaulthost:10.161.12.14 --add-host=databaseunihost:10.161.12.14 push-backend-microapiapp
+
+
+
+
+打開 Browser 確認
+要打開 Browser 確認 Tomcat Service 有沒有被執行起來時，
+發現我們不知道 Docker Container 的 IP，
+
+First get the container ID:
+
+docker ps -a
+(First column is for container ID)
+
+Use the container ID to run:
+
+docker inspect <container ID>
+At the bottom,under "NetworkSettings", you can find "IPAddress"
+
+Or Just do:
+
+docker inspect <container id> | grep "IPAddress"
+docker inspect <container id> | grep -i "IPAddress"
+docker network inspect bridge | grep Gateway | grep -o -E '[0-9.]+'
+
+這時侯只能使用 docker exec 進入 docker container查詢 IP 。
+
+
+
+docker-compose
+
+docker-compose -f Docker-compose.PushMicroService.yml up -d
+
+docker-compose -f Docker-compose.PushMicroService.yml ps
+
+docker-compose -f Docker-compose.PushMicroService.yml up --detach --build
+
+docker-compose -f Docker-compose.PushMicroService.yml restart -t 10 push-backend-microapiapp
+
+docker-compose -f Docker-compose.PushMicroService.yml up --detach --build push-backend-microapiapp
+
+docker-compose -f Docker-compose.PushMicroService.yml down
+
+
+docker volume ls
+docker volume inspect pushallinone_logDirName
+docker volume rm pushallinone_logDirName
+
+docker volume create push-volume
+docker volume ls 
+docker volume inspect push-volume
+docker volume rm push-volume
+
+
+
+ip forward
+
+
+echo socat tcp-listen:11122,fork tcp:10.201.39.11:22 | at now 
+echo socat tcp-listen:6379,fork tcp:10.201.39.11:6379 | at now 
+echo socat tcp-listen:5672,fork tcp:10.201.39.11:5672 | at now 
+echo socat tcp-listen:15672,fork tcp:10.201.39.11:15672 | at now 
+echo socat tcp-listen:5775,fork tcp:10.201.39.11:5775 | at now 
+echo socat tcp-listen:6831,fork tcp:10.201.39.11:6831 | at now 
+echo socat tcp-listen:6832,fork tcp:10.201.39.11:6832 | at now 
+echo socat tcp-listen:5778,fork tcp:10.201.39.11:5778 | at now 
+echo socat tcp-listen:16686,fork tcp:10.201.39.11:16686 | at now 
+echo socat tcp-listen:14267,fork tcp:10.201.39.11:14267 | at now 
+echo socat tcp-listen:14268,fork tcp:10.201.39.11:14268 | at now 
+echo socat tcp-listen:14250,fork tcp:10.201.39.11:14250 | at now 
+echo socat tcp-listen:9411,fork tcp:10.201.39.11:9411 | at now 
+echo socat tcp-listen:4000,fork tcp:10.201.39.11:4000 | at now 
+echo socat tcp-listen:4010,fork tcp:10.201.39.11:4010 | at now 
+echo socat tcp-listen:4020,fork tcp:10.201.39.11:4020 | at now 
+echo socat tcp-listen:4100,fork tcp:10.201.39.11:4100 | at now 
+echo socat tcp-listen:4110,fork tcp:10.201.39.11:4110 | at now 
+echo socat tcp-listen:4120,fork tcp:10.201.39.11:4120 | at now 
+echo socat tcp-listen:4200,fork tcp:10.201.39.11:4200 | at now 
+echo socat tcp-listen:4210,fork tcp:10.201.39.11:4210 | at now 
+echo socat tcp-listen:4220,fork tcp:10.201.39.11:4220 | at now 
+echo socat tcp-listen:4300,fork tcp:10.201.39.11:4300 | at now 
+echo socat tcp-listen:4310,fork tcp:10.201.39.11:4310 | at now 
+echo socat tcp-listen:4320,fork tcp:10.201.39.11:4320 | at now 
+echo socat tcp-listen:4400,fork tcp:10.201.39.11:4400 | at now 
+echo socat tcp-listen:4410,fork tcp:10.201.39.11:4410 | at now 
+echo socat tcp-listen:4420,fork tcp:10.201.39.11:4420 | at now 
+echo socat tcp-listen:4500,fork tcp:10.201.39.11:4500 | at now 
+echo socat tcp-listen:4510,fork tcp:10.201.39.11:4510 | at now 
+echo socat tcp-listen:4520,fork tcp:10.201.39.11:4520 | at now 
+echo socat tcp-listen:4600,fork tcp:10.201.39.11:4600 | at now 
+echo socat tcp-listen:4610,fork tcp:10.201.39.11:4610 | at now 
+echo socat tcp-listen:4620,fork tcp:10.201.39.11:4620 | at now 
+echo socat tcp-listen:4700,fork tcp:10.201.39.11:4700 | at now 
+echo socat tcp-listen:4710,fork tcp:10.201.39.11:4710 | at now 
+echo socat tcp-listen:4720,fork tcp:10.201.39.11:4720 | at now 
+echo socat tcp-listen:4800,fork tcp:10.201.39.11:4800 | at now 
+echo socat tcp-listen:4810,fork tcp:10.201.39.11:4810 | at now 
+echo socat tcp-listen:4820,fork tcp:10.201.39.11:4820 | at now 
+echo socat tcp-listen:4900,fork tcp:10.201.39.11:4900 | at now 
+echo socat tcp-listen:4910,fork tcp:10.201.39.11:4910 | at now 
+echo socat tcp-listen:4920,fork tcp:10.201.39.11:4920 | at now 
+echo socat tcp-listen:5000,fork tcp:10.201.39.11:5000 | at now 
+echo socat tcp-listen:5010,fork tcp:10.201.39.11:5010 | at now 
+echo socat tcp-listen:5020,fork tcp:10.201.39.11:5020 | at now 
+echo socat tcp-listen:5100,fork tcp:10.201.39.11:5100 | at now 
+echo socat tcp-listen:5110,fork tcp:10.201.39.11:5110 | at now 
+echo socat tcp-listen:5120,fork tcp:10.201.39.11:5120 | at now 
+echo socat tcp-listen:5200,fork tcp:10.201.39.11:5200 | at now 
+echo socat tcp-listen:5210,fork tcp:10.201.39.11:5210 | at now 
+echo socat tcp-listen:5220,fork tcp:10.201.39.11:5220 | at now 
+echo socat tcp-listen:5300,fork tcp:10.201.39.11:5300 | at now 
+echo socat tcp-listen:5310,fork tcp:10.201.39.11:5310 | at now 
+echo socat tcp-listen:5400,fork tcp:10.201.39.11:5400 | at now 
+echo socat tcp-listen:5410,fork tcp:10.201.39.11:5410 | at now 
+echo socat tcp-listen:5500,fork tcp:10.201.39.11:5500 | at now 
+echo socat tcp-listen:5510,fork tcp:10.201.39.11:5510 | at now 
+echo socat tcp-listen:5520,fork tcp:10.201.39.11:5520 | at now 
+echo socat tcp-listen:5600,fork tcp:10.201.39.11:5600 | at now 
+echo socat tcp-listen:5610,fork tcp:10.201.39.11:5610 | at now 
+echo socat tcp-listen:5620,fork tcp:10.201.39.11:5620 | at now 
+echo socat tcp-listen:5700,fork tcp:10.201.39.11:5700 | at now 
+echo socat tcp-listen:5710,fork tcp:10.201.39.11:5710 | at now 
+echo socat tcp-listen:5720,fork tcp:10.201.39.11:5720 | at now 
+echo socat tcp-listen:5800,fork tcp:10.201.39.11:5800 | at now 
+echo socat tcp-listen:5810,fork tcp:10.201.39.11:5810 | at now 
+echo socat tcp-listen:5820,fork tcp:10.201.39.11:5820 | at now 
+echo socat tcp-listen:5900,fork tcp:10.201.39.11:5900 | at now 
+echo socat tcp-listen:5910,fork tcp:10.201.39.11:5910 | at now 
+echo socat tcp-listen:5920,fork tcp:10.201.39.11:5920 | at now
+
+install docker-compose
+https://segmentfault.com/a/1190000023560886
