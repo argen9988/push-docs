@@ -1,0 +1,443 @@
+
+
+在 iOS 中设置 Firebase Cloud Messaging 客户端应用
+https://firebase.google.com/docs/cloud-messaging/ios/client
+
+Push Notification教學：如何使用Firebase在iOS實現推播功能
+https://www.appcoda.com.tw/firebase-push-notifications/
+
+android 通过GPS获取用户地理位置并监听位置变化
+https://developer.aliyun.com/article/237930
+
+
+gradlew build --stacktrace
+
+‰
+
+
+開發平臺Capacitor問世，通吃行動與桌面App
+https://www.ithome.com.tw/news/121858
+
+
+***** 純粹沒有寫過行動，Ionic 學習中.
+https://ithelp.ithome.com.tw/users/20130047/ironman/3415
+
+
+*** How to Launch Native Views in an Ionic Application
+https://eliteionic.com/tutorials/how-to-launch-native-views-in-an-ionic-application/
+
+
+初探 ionic framework
+https://ithelp.ithome.com.tw/articles/10157335
+
+How to Install the Ionic Framework on Top of Cordova in Windows
+https://dzone.com/articles/how-to-install-ionic-framework-on-top-of-cordova-i
+
+Android Development
+https://ionicframework.com/docs/developing/android
+
+iOS Development
+https://ionicframework.com/docs/developing/ios
+
+capacitor plugins
+https://capacitorjs.com/docs/plugins
+https://capacitorjs.com/docs/plugins/ios
+
+
+How to Build Your Own Capacitor Plugin for Ionic
+https://devdactic.com/build-capacitor-plugin/
+
+
+事件推播功能(FCM)
+https://medium.com/%E5%BD%BC%E5%BE%97%E6%BD%98%E7%9A%84-swift-ios-app-%E9%96%8B%E7%99%BC%E6%95%99%E5%AE%A4/firebase%E4%BA%8B%E4%BB%B6%E6%8E%A8%E6%92%AD%E5%8A%9F%E8%83%BD-fcm-5d3b317ff146
+
+
+FCM — Firebase web 推播踩坑筆記
+https://medium.com/@genepan/firebase-%E7%B6%B2%E9%A0%81%E6%8E%A8%E6%92%AD%E6%8E%A1%E5%9D%91%E7%AD%86%E8%A8%98-58ab487b952e
+
+
+傳送告白推播的 Push Notification
+https://www.appcoda.com.tw/push-notification/
+
+
+Day05 背景定時提醒功能 + Broacast/Service/Notification介紹
+https://zh-tw.coderbridge.com/series/af7bf1c05a36404d8b84cee755a8d2b1/posts/e58ff3b93d3841d4b21a74c280ac063e
+
+
+Restoring the default .gitignore file
+https://ionic.zendesk.com/hc/en-us/articles/360000139267-Restoring-the-default-gitignore-file
+
+
+
+https://firebase.google.com/docs/cloud-messaging/http-server-ref
+
+
+
+
+******
+FCM: 1.FireBaseWay
+Set up a Firebase Cloud Messaging client app on Android
+https://firebase.google.com/docs/cloud-messaging/android/client
+https://firebase.google.com/docs/cloud-messaging/android/client?hl=zh-cn
+Set up a Firebase Cloud Messaging client app on iOS
+https://firebase.google.com/docs/cloud-messaging/ios/client
+https://firebase.google.com/docs/cloud-messaging/ios/client?hl=zh-cn
+
+
+Send a test message to a backgrounded app
+https://firebase.google.com/docs/cloud-messaging/android/first-message
+https://firebase.google.com/docs/cloud-messaging/android/first-message?hl=zh-cn
+https://github.com/firebase/quickstart-android/tree/f107db13ebbe85ae3e0e731f6c60a5580c37355c/messaging/app/src/main
+Send a test message to a backgrounded iOS app
+https://firebase.google.com/docs/cloud-messaging/ios/first-message
+https://firebase.google.com/docs/cloud-messaging/ios/first-message?hl=zh-cn
+
+
+Receive messages in an Android app(foreground)
+https://firebase.google.com/docs/cloud-messaging/android/receive
+https://firebase.google.com/docs/cloud-messaging/android/receive?hl=zh-cn
+Receive messages in an iOS app(foreground)
+https://firebase.google.com/docs/cloud-messaging/ios/receive
+https://firebase.google.com/docs/cloud-messaging/ios/receive?hl=zh-cn
+
+
+Send messages to multiple devices
+https://firebase.google.com/docs/cloud-messaging/android/send-multiple
+https://firebase.google.com/docs/cloud-messaging/android/send-multiple?hl=zh-cn
+Send messages to multiple devices on iOS
+https://firebase.google.com/docs/cloud-messaging/ios/send-multiple
+https://firebase.google.com/docs/cloud-messaging/iso/send-multiple?hl=zh-cn
+
+
+About FCM messages
+https://firebase.google.com/docs/cloud-messaging/concept-options
+https://firebase.google.com/docs/cloud-messaging/concept-options?hl=zh-cn
+
+
+
+Your server environment and FCM
+https://firebase.google.com/docs/cloud-messaging/server
+https://firebase.google.com/docs/cloud-messaging/server?hl=zh-cn
+
+
+FCM ports and your firewall
+https://firebase.google.com/docs/cloud-messaging/concept-options#messaging-ports-and-your-firewall
+https://firebase.google.com/docs/cloud-messaging/concept-options#messaging-ports-and-your-firewall?hl=zh-cn
+https://support.apple.com/en-ph/HT203609
+
+
+Add the Firebase Admin SDK to your server
+https://firebase.google.com/docs/admin/setup
+https://firebase.google.com/docs/admin/setup?hl=zh-cn
+
+
+Add Firebase to an app
+Add Firebase to your Android project
+https://firebase.google.com/docs/android/setup
+https://firebase.google.com/docs/android/setup?hl=zh-cn
+Add Firebase to your IOS project
+https://firebase.google.com/docs/ios/setup
+https://firebase.google.com/docs/ios/setup?hl=zh-cn
+Add Firebase to your JavaScript project
+https://firebase.google.com/docs/web/setup
+https://firebase.google.com/docs/web/setup?hl=zh-cn
+
+
+https://github.com/firebase/snippets-java/
+https://github.com/firebase/snippets-node/
+https://github.com/firebase/snippets-ios/
+
+
+*****
+iOS Developer Learning Android. Lesson 26 - FCM Notification (Service & BroadcastReceiver)
+https://ithelp.ithome.com.tw/articles/10227253
+Kotlin 開發第 16 天 PushMessaging (Firebase + BroadcastManager)
+https://android.devdon.com/archives/306
+Day 26 - BroadcastReceiver接收事件
+https://ithelp.ithome.com.tw/articles/10188791
+[Day19]Android學習-類別介紹-BroadcastReceiver
+https://ithelp.ithome.com.tw/articles/10221116
+Kotlin for Android 系列
+https://ithelp.ithome.com.tw/users/20111944/ironman/1777?page=1
+*****
+
+
+*****
+If the app is in background state UINotification called application didReceiveRemoteNotification, 
+If app is in open state UINotification called application:didFinishLaunchingWithOptions, 
+And can't possible to get data without click on notification in iOS.
+*****
+
+
+
+Firebase Cloud Messaging
+https://firebase.google.com/docs/cloud-messaging
+https://firebase.google.com/docs/cloud-messaging?hl=zh-cn
+
+https://github.com/firebase/quickstart-android/tree/master/messaging
+
+
+
+
+合作愉快的第二十六天：聊天室功能調整和 FCM 推播（下）
+https://ithelp.ithome.com.tw/articles/10249156
+
+
+Build app server send requests(server api)
+https://firebase.google.com/docs/cloud-messaging/send-message?skip_cache=true#send_direct_boot-enabled_messages_android_only
+
+
+https://capacitorjs.com/docs/apis/push-notifications
+
+https://firebase.google.com/docs/admin/setup/
+https://github.com/firebase/firebase-admin-java/tree/0d7888f6963b5f96c67c16a32980b9873df2a882
+
+******
+
+
+*****
+FCM: 2.VueWay
+How to set up Firebase Push Notifications with Ionic & Vue.js
+https://dev.to/marcoimproda90/how-to-configure-firebase-push-notifications-with-ionic-vue-js-38n7
+
+capacitor-community/fcm
+https://github.com/capacitor-community/fcm
+
+Using Push Notifications with Firebase in an Ionic + Angular App
+https://capacitorjs.com/docs/guides/push-notifications-firebase
+
+Firebase Cloud Messaging to receive Push Notification in Ionic 4 Vue app using Capacitor.
+https://medium.com/techshots/learn-to-use-firebase-cloud-messaging-to-receive-push-notification-in-ionic-4-vue-app-using-13f5a4458b87
+*****
+
+
+*****
+PWA 學習筆記 – 5：用 Firebase 做 Web Push
+https://www.letswrite.tw/pwa-web-push/
+*****
+@vue/cli-plugin-pwa
+https://cli.vuejs.org/core-plugins/pwa.html#example-configuration
+vue add pwa
+
+3 Steps to Add PWA to Vue.js in 2020
+https://medium.com/@stephen.trevor.wong/3-steps-to-add-pwa-to-vue-js-in-2020-9f9daa56f9
+https://github.com/stetrevor/vuejs-pwa-demo
+
+PWA 實戰經驗分享
+https://blog.techbridge.cc/2018/10/13/pwa-in-action/
+
+
+
+
+
+Day26 前端福音(1/4): Firebase-介紹 & 建立專案
+https://ithelp.ithome.com.tw/articles/10205404
+
+Firebase 教學 - Node.js 操作 Realtime Database
+https://www.oxxostudio.tw/articles/201907/firebase-nodejs-realtime-database.html
+
+*****
+
+*****
+android維持登入狀態
+https://www.itread01.com/p/55241.html
+*****
+
+
+
+
+
+
+
+http://blog.changyy.org/2017/10/firebase-firebase-firebase-cloud.html
+http://blog.changyy.org/2017/10/firebase-firebase-fcm-web-app-debug.html
+
+
+
+
+
+#npm install -g uuid
+#npm install -g ionic
+npm install -g @ionic/cli
+
+
+ionic -v
+
+# ionic start template
+# https://ionicframework.com/docs/v3/cli/starters.html
+# https://ionicframework.com/docs/cli
+ionic start PEC_GROUPBUY.ionic blank --type=vue
+
+Pick a framework!
+
+Please select the JavaScript framework to use for your new app. To bypass this prompt next time, supply a value for the
+--type option.
+
+? Framework: Vue
+
+Let's pick the perfect starter template!
+
+Starter templates are ready-to-go Ionic apps that come packed with everything you need to build your app. To bypass this
+prompt next time, supply template, the second argument to ionic start.
+
+? Starter template:
+  tabs     | A starting project with a simple tabbed interface
+  sidemenu | A starting project with a side menu with navigation in the content area
+> blank    | A blank starter project
+  list     | A starting project with a list
+
+
+Your Ionic app is ready! Follow these next steps:
+
+- Go to your new project: cd .\PEC_GROUPBUY.ionic
+- Run ionic serve within the app directory to see your app in the browser
+- Run ionic capacitor add to add a native iOS or Android project using Capacitor
+- Generate your app icon and splash screens using cordova-res --skip-config --copy
+- Explore the Ionic docs for components, tutorials, and more: https://ion.link/docs
+- Building an enterprise app? Ionic has Enterprise Support and Features: https://ion.link/enterprise-edition
+
+cd PEC_GROUPBUY.ionic
+
+correct capacitor.config.ts appId, appName
+npx cap init
+C:\Android\PEC_GROUPBUY.ionic>npx cap init
+[?] What is the name of your app?
+    This should be a human-friendly app name, like what you'd see in the App Store.
+√ Name ... PEC_GROUPBUY.ionic
+[?] What should be the Package ID for your app?
+    Package IDs (aka Bundle ID in iOS and Application ID in Android) are unique identifiers for apps. They must be in
+    reverse domain name notation, generally representing a domain name that you or your company owns.
+√ Package ID ... com.pec.groupbuy
+√ Creating capacitor.config.ts in C:\Android\PEC_GROUPBUY.ionic in 13.43ms
+[success] capacitor.config.ts created!
+
+Next steps:
+https://capacitorjs.com/docs/getting-started#where-to-go-next
+[?] Join the Ionic Community! �
+    Connect with millions of developers on the Ionic Forum and get access to live events, news updates, and more.
+√ Create free Ionic account? ... no
+
+
+ionic serve
+
+ionic integrations enable capacitor
+ionic build 
+npm install @capacitor/android
+ionic capacitor add android
+ionic capacitor sync android #npx cap add android
+ionic capacitor open android
+use android studio import exist project run & generate apk
+ionic capacitor update android
+
+
+npm install @capacitor/ios
+ionic capacitor add ios
+ionic capacitor sync ios #npx cap add ios
+
+
+
+
+plugins 
+# https://capacitorjs.com/docs/plugins
+npm install @capacitor/app d
+
+npm install @capacitor/browser a
+npm install @ionic-native/in-app-browser a
+
+npm install @capacitor/camera
+npm install @capacitor/clipboard
+npm install @capacitor/device a
+npm install @capacitor/dialog a
+npm install @capacitor/filesystem
+npm install @capacitor/geolocation
+npm install @capacitor/haptics d
+npm install @capacitor/keyboard d
+npm install @capacitor/local-notifications
+npm install @capacitor/motion
+npm install @capacitor/network
+
+#google-services plugin capacitor
+npm install @capacitor/push-notifications a
+npm install --save @capacitor-community/fcm a
+
+npm install @capacitor/share
+npm install @capacitor/splash-screen a
+npm install @capacitor/status-bar d
+npm install @capacitor/storage
+npm install @capacitor/text-zoom
+npm install @capacitor/toast a
+ionic capacitor sync android #npx cap sync
+
+#https://capacitorjs.com/docs/plugins/ios
+
+
+
+
+
+
+#https://capacitorjs.com/docs/basics/configuring-your-app
+capacitor.config.json
+{
+	"appId": "io.ionic.starter",
+	"appName": "PEC_GROUPBUY.ionic",
+	"webDir": "dist",
+	"bundledWebRuntime": false,
+	"server": {
+		"iosScheme": "https",
+		"androidScheme": "https",
+		"url": "https://pec-group-buy.web.app/",
+		"allowNavigation": ["*"]
+	}
+	
+	"server": {
+		// Capacitor to open URLs belonging to these hosts inside its WebView.
+		"allowNavigation": [
+			"https://pec-group-buy.web.app/"
+		]
+	}
+}
+
+
+AndroidManifest.xml
+  <preference name="Hostname" value="pec-group-buy.web.app" />
+  <allow-navigation href="http://pec-group-buy.web.app/*"/>
+  <preference name="Scheme" value="https" />
+  <preference name="ResolveServiceWorkerRequests" value="true" />
+  <preference name="MixedContentMode" value="2" />
+
+
+
+
+
+ionic start capApp blank --type=vue
+#ionic start capApp blank --type=angular
+
+npx cap init
+C:\Android\PEC_GROUPBUY.ionic>npx cap init
+[?] What is the name of your app?
+    This should be a human-friendly app name, like what you'd see in the App Store.
+√ Name ... PEC_GROUPBUY.ionic
+[?] What should be the Package ID for your app?
+    Package IDs (aka Bundle ID in iOS and Application ID in Android) are unique identifiers for apps. They must be in
+    reverse domain name notation, generally representing a domain name that you or your company owns.
+√ Package ID ... com.pec.groupbuy
+√ Creating capacitor.config.ts in C:\Android\PEC_GROUPBUY.ionic in 13.43ms
+[success] capacitor.config.ts created!
+
+Next steps:
+https://capacitorjs.com/docs/getting-started#where-to-go-next
+[?] Join the Ionic Community! �
+    Connect with millions of developers on the Ionic Forum and get access to live events, news updates, and more.
+√ Create free Ionic account? ... no
+
+
+
+ngrok
+ngrok authtoken 1rjV3pGouRCD22smwY4TtMXlPOA_27uaPRFTCWaztVkgW9xF6
+ngrok http 3000
+ngrok http 3000 -subdomain pec-group-buy.ngrok.io
+
+
+APNS (HTTP/2) with PHP simple push ( Ubuntu 14.04)
+https://github.com/vocolboy/APNS-HTTP2-PHP-Guide
+

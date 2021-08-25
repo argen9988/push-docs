@@ -122,25 +122,25 @@ services:
 #      - ENV_CLUSTER_PORT=3120
 #      - ENV_LOG_DIRNAME=/usr/src/dockerapp/logs/pushauthmicroapi
 #      - DATABASE_DEFAULT_HOST=databasedefaulthost
-#      #- DATABASE_DEFAULT_PORT=11527
-#      #- DATABASE_DEFAULT_SID=lxtp22
 #      - DATABASE_DEFAULT_PORT=1527
-#      - DATABASE_DEFAULT_SID=tp22
+#      - DATABASE_DEFAULT_SID=lxtp22
+#      #- DATABASE_DEFAULT_PORT=1527
+#      #- DATABASE_DEFAULT_SID=tp22
 #      - DATABASE_UNI_HOST=databaseunihost
-#      #- DATABASE_UNI_PORT=11527
-#      #- DATABASE_UNI_SID=lxtp22
 #      - DATABASE_UNI_PORT=1527
-#      - DATABASE_UNI_SID=tp22
+#      - DATABASE_UNI_SID=lxtp22
+#      #- DATABASE_UNI_PORT=1527
+#      #- DATABASE_UNI_SID=tp22
 #      - DATABASE_FDM_HOST=databasefdmhost
-#      #- DATABASE_FDM_PORT=11527
+#      #- DATABASE_FDM_PORT=1527
 #      #- DATABASE_FDM_SID=lxtp22
 #      - DATABASE_FDM_PORT=1527
 #      - DATABASE_FDM_SID=tp22
 #      - DATABASE_NRM_HOST=databasenrmhost
-#      #- DATABASE_NRM_PORT=11527
-#      #- DATABASE_NRM_SID=lxtp22
 #      - DATABASE_NRM_PORT=1527
-#      - DATABASE_NRM_SID=tp22
+#      - DATABASE_NRM_SID=lxtp22
+#      #- DATABASE_NRM_PORT=1527
+#      #- DATABASE_NRM_SID=tp22
 #      #- JAEGER_SAMPLER_HOST=jaegersamplerhost
 #      - JAEGER_REPORTER_HOST=jaegerreporterhost
 #      # 指定共用環境變數(cache,queue)
@@ -179,14 +179,14 @@ services:
 #      - "jaegerreporterhost:10.201.39.11"
 #      - "pushauthmicroapiapphost:10.201.39.11"
 #      - "pushbackendmicroapiapphost:10.201.39.11"
-#      #- "databasedefaulthost:10.161.12.14"
-#      #- "databaseunihost:10.161.12.14"
+#      - "databasedefaulthost:10.161.12.14"
+#      - "databaseunihost:10.161.12.14"
 #      #- "databasefdmhost:10.161.12.14"
-#      #- "databasenrmhost:10.161.12.14"
-#      - "databasedefaulthost:10.161.12.1"
-#      - "databaseunihost:10.161.12.1"
+#      - "databasenrmhost:10.161.12.14"
+#      #- "databasedefaulthost:10.161.12.1"
+#      #- "databaseunihost:10.161.12.1"
 #      - "databasefdmhost:10.161.12.1"
-#      - "databasenrmhost:10.161.12.1"
+#      #- "databasenrmhost:10.161.12.1"
 #    #depends_on:
 #    #  - push-redis
 #    #  - push-rabbitmq
@@ -230,25 +230,25 @@ services:
       #- ENV_CLUSTER_PORT=3220
       - ENV_LOG_DIRNAME=/usr/src/dockerapp/logs/pushbackendmicroapi
       - DATABASE_DEFAULT_HOST=databasedefaulthost
-      #- DATABASE_DEFAULT_PORT=11527
-      #- DATABASE_DEFAULT_SID=lxtp22
       - DATABASE_DEFAULT_PORT=1527
-      - DATABASE_DEFAULT_SID=tp22
+      - DATABASE_DEFAULT_SID=lxtp22
+      #- DATABASE_DEFAULT_PORT=1527
+      #- DATABASE_DEFAULT_SID=tp22
       - DATABASE_UNI_HOST=databaseunihost
-      #- DATABASE_UNI_PORT=11527
-      #- DATABASE_UNI_SID=lxtp22
       - DATABASE_UNI_PORT=1527
-      - DATABASE_UNI_SID=tp22
+      - DATABASE_UNI_SID=lxtp22
+      #- DATABASE_UNI_PORT=1527
+      #- DATABASE_UNI_SID=tp22
       - DATABASE_FDM_HOST=databasefdmhost
-      #- DATABASE_FDM_PORT=11527
+      #- DATABASE_FDM_PORT=1527
       #- DATABASE_FDM_SID=lxtp22
       - DATABASE_FDM_PORT=1527
       - DATABASE_FDM_SID=tp22      
       - DATABASE_NRM_HOST=databasenrmhost
-      #- DATABASE_NRM_PORT=11527
-      #- DATABASE_NRM_SID=lxtp22
       - DATABASE_NRM_PORT=1527
-      - DATABASE_NRM_SID=tp22
+      - DATABASE_NRM_SID=lxtp22
+      #- DATABASE_NRM_PORT=1527
+      #- DATABASE_NRM_SID=tp22
       #- JAEGER_SAMPLER_HOST=jaegersamplerhost
       - JAEGER_REPORTER_HOST=jaegerreporterhost
       # 指定共用環境變數(cache,queue)
@@ -289,14 +289,14 @@ services:
       - "jaegerreporterhost:10.201.39.11"
       - "pushauthmicroapiapphost:10.201.39.11"
       - "pushbackendmicroapiapphost:10.201.39.11"
-      #- "databasedefaulthost:10.161.12.14"
-      #- "databaseunihost:10.161.12.14"
+      - "databasedefaulthost:10.161.12.14"
+      - "databaseunihost:10.161.12.14"
       #- "databasefdmhost:10.161.12.14"
-      #- "databasenrmhost:10.161.12.14"      
-      - "databasedefaulthost:10.161.12.1"
-      - "databaseunihost:10.161.12.1"
+      - "databasenrmhost:10.161.12.14"      
+      #- "databasedefaulthost:10.161.12.1"
+      #- "databaseunihost:10.161.12.1"
       - "databasefdmhost:10.161.12.1"
-      - "databasenrmhost:10.161.12.1"
+      #- "databasenrmhost:10.161.12.1"
     #depends_on:  
     #  - push-redis
     #  - push-rabbitmq
