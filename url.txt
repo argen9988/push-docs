@@ -437,6 +437,10 @@ ngrok authtoken 1rjV3pGouRCD22smwY4TtMXlPOA_27uaPRFTCWaztVkgW9xF6
 ngrok http 3000
 ngrok http 3000 -subdomain pec-group-buy.ngrok.io
 
+ngrok http 8080 -host-header="localhost:8080"
+ngrok http --host-header=rewrite 8080
+
+
 
 APNS (HTTP/2) with PHP simple push ( Ubuntu 14.04)
 https://github.com/vocolboy/APNS-HTTP2-PHP-Guide
