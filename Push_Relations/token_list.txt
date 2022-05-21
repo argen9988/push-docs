@@ -16,14 +16,26 @@ openssl s_client -connect "https://api.push.apple.com":443 -cert "C:\Temp\NESTJS
 curl -v --header "apns-topic: ${TOPIC}" --header "apns-push-type: alert" --cert "${CERTIFICATE_FILE_NAME}" --cert-type DER --key "${CERTIFICATE_KEY_FILE_NAME}" --key-type PEM --data '{"aps":{"alert":"test"}}' --http2  https://${APNS_HOST_NAME}/3/device/${DEVICE_TOKEN}
 
 local
-curl -v --header "apns-topic: com.pec.unilife" --header "apns-push-type: alert" --cert "C:\Temp\NESTJS\FCM\fcm-backend-microapiapp\config\pec.unilife.pem" --pass "ddd444kkk" --data '{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}' --http2  "https://api.push.apple.com/3/device/288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B"
+curl -v --header "apns-topic: com.pec.unilife" --header "apns-push-type: alert" --cert "/Users/argenhsieh/Downloads/push/pec-unilife.pem" --pass "ddd444kkk" --data '{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}' --http2  "https://api.push.apple.com/3/device/288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B"
 
 tp docker
-curl -v --header "apns-topic: com.pec.unilife" --header "apns-push-type: alert" --cert "/usr/src/dockerapp/config/pec.unilife.pem" --pass "ddd444kkk" --data '{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}' --http2  "https://api.push.apple.com/3/device/288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B"
+curl -v --header "apns-topic: com.pec.unilife" --header "apns-push-type: alert" --cert "/usr/src/dockerapp/config/pec-unilife.pem" --pass "ddd444kkk" --data '{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}' --http2  "https://api.push.apple.com/3/device/288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B"
 
 
 
 '{"aps":{"alert":{"title":"123","body":"456789"},"custom_url":"http://google.com"}}'
+
+
+
+[CSharp]token-based authentication APNS推播範例
+http://monkeybinbin-blog.logdown.com/posts/1120802-apns-token-based-authentication-csharp
+
+
+
+如何將.pem轉換為.crt和.key？
+https://www.796t.com/content/1545089232.html
+
+openssl x509 -outform der -in pec-unilife.pem -out pec-unilife.der
 
 
 
@@ -32,7 +44,7 @@ https://levelup.gitconnected.com/send-push-notification-through-apns-using-node-
 http://edgecase.info/pec/apns.php
 
 Bruce iPhone11 Pro token
-A91F15A1B949032F5B8085D1C745865CBA5CF1E8FF355B09A687231B281A0EFE 
+A91F15A1B949032F5B8085D1C745865CBA5CF1E8FF355B09A687231B281A0EFE
 
 iPhone12 token
 288BEC84DE658697B332C4A0B6F779FEDD8E1E7E9758BC5114C4696936EFC62B
@@ -47,6 +59,3 @@ HTTP/2 400 apns-id: 6B6F61C6-0FDD-D7D7-73EF-0D0FE0813D1B {"reason":"BadDeviceTok
 
 
 https://unilifetest.pec.com.tw/product/9955
-
-
-
