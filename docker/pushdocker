@@ -25,6 +25,9 @@ FROM oraclelinux:7-slim
 RUN yum -y install net-tools iputils telnet traceroute
 
 # oraclelinux8
+##RUN yum -y install make gcc*
+#RUN yum -y install make gcc-c++
+#RUN yum -y install python2
 #RUN yum -y install @nodejs:14
 #RUN yum -y install oracle-instantclient-release-el8 oraclelinux-developer-release-el8 oracle-release-el8
 #RUN yum-config-manager --enable ol8_oracle_instantclient
