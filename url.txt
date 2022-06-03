@@ -6,13 +6,14 @@ https://firebase.google.com/docs/cloud-messaging/ios/client
 Push Notification教學：如何使用Firebase在iOS實現推播功能
 https://www.appcoda.com.tw/firebase-push-notifications/
 
+How to use Firebase Cloud functions to send push notifications
+https://engineering.monstar-lab.com/en/post/2021/02/09/Use-Firebase-Cloudfunctions-To-Send-Push-Notifications/
+
 android 通过GPS获取用户地理位置并监听位置变化
 https://developer.aliyun.com/article/237930
 
 
 gradlew build --stacktrace
-
-‰
 
 
 開發平臺Capacitor問世，通吃行動與桌面App
@@ -163,8 +164,8 @@ https://ithelp.ithome.com.tw/users/20111944/ironman/1777?page=1
 
 
 *****
-If the app is in background state UINotification called application didReceiveRemoteNotification, 
-If app is in open state UINotification called application:didFinishLaunchingWithOptions, 
+If the app is in background state UINotification called application didReceiveRemoteNotification,
+If app is in open state UINotification called application:didFinishLaunchingWithOptions,
 And can't possible to get data without click on notification in iOS.
 *****
 
@@ -321,7 +322,7 @@ https://capacitorjs.com/docs/getting-started#where-to-go-next
 ionic serve
 
 ionic integrations enable capacitor
-ionic build 
+ionic build
 npm install @capacitor/android
 ionic capacitor add android
 ionic capacitor sync android #npx cap add android
@@ -337,7 +338,7 @@ ionic capacitor sync ios #npx cap add ios
 
 
 
-plugins 
+plugins
 # https://capacitorjs.com/docs/plugins
 npm install @capacitor/app d
 
@@ -388,7 +389,7 @@ capacitor.config.json
 		"url": "https://pec-group-buy.web.app/",
 		"allowNavigation": ["*"]
 	}
-	
+
 	"server": {
 		// Capacitor to open URLs belonging to these hosts inside its WebView.
 		"allowNavigation": [
@@ -444,4 +445,3 @@ ngrok http --host-header=rewrite 8080
 
 APNS (HTTP/2) with PHP simple push ( Ubuntu 14.04)
 https://github.com/vocolboy/APNS-HTTP2-PHP-Guide
-
