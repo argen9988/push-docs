@@ -1,3 +1,7 @@
+*.zip
+*.exe
+*.msi
+
 # Logs
 logs
 *.log
