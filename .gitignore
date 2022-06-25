@@ -1,6 +1,9 @@
 *.zip
 *.exe
 *.msi
+*.dmg
+*.mp4
+*.mov
 
 # Logs
 logs
